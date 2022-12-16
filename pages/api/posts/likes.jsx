@@ -103,9 +103,14 @@ handler.use(isAuth).patch(async (req, res) =>
         
         
     } catch (err) {
-        res.status(500).json(err.message)
+        res.status(500).json({
+            message: err.message,
+        })
+    } finally
+    {
+        await db.disconnect()
     }
-    setTimeout(async ()  => { await db.disconnect() }, 1500)
+    
 })
 export default handler;
 
