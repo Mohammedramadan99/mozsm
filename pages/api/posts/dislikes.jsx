@@ -76,7 +76,8 @@ handler.use(isAuth).put(async (req, res) =>
         );
         res.json(post);
     }
-    await db.disconnect();
+    setTimeout(async () => { await db.disconnect() }, 1500)
+
 })
 
 export default handler;
