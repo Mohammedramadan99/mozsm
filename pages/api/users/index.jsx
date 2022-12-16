@@ -1,8 +1,6 @@
 import nc from 'next-connect';
 import User from '../../../models/User';
-import Post from '../../../models/Post';
 import db from '../../../utils/db/dbConnect';
-import mongoose from 'mongoose';
 
 const handler = nc();
 

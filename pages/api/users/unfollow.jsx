@@ -1,7 +1,7 @@
-import User from '../../../../models/User';
+import User from '../../../models/User';
 import nc from 'next-connect';
-import { isAuth } from '../../../../utils/auth';
-import db from '../../../../utils/db/dbConnect'
+import { isAuth } from '../../../utils/auth';
+import db from '../../../utils/db/dbConnect'
 const handler = nc();
 
 handler.use(isAuth).put(async (req, res) =>
