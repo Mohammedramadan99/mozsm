@@ -108,7 +108,7 @@ handler.use(isAuth).patch(async (req, res) =>
         })
     } finally
     {
-        await db.disconnect()
+        // await db.disconnect()
     }
     
 })

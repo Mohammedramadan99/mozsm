@@ -6,7 +6,7 @@ import Post from '../../../models/Post';
 export const config = {
     api: {
         bodyParser: {
-            sizeLimit: '4mb' // Set desired value here
+            sizeLimit: '20mb' // Set desired value here
         }
     }
 }
@@ -85,7 +85,7 @@ handler.use(isAuth).put(async (req, res) =>
         })
     } finally
     { 
-        await db.disconnect()
+        // await db.disconnect()
     }
     
 
