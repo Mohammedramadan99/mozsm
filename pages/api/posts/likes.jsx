@@ -15,14 +15,14 @@ handler.use(isAuth).patch(async (req, res) =>
         const { postId } = req?.body;
         const post = await Post.findById(postId);
 
-        // await Notification.create({
-        //     user: post?.user._id,
-        //     reactedUser: req.user._id,
-        //     type: "like",
-        //     title: `${req?.user?.name} ${post?.likes?.length - 1 > 0 ? `and ${post?.likes?.length - 1} others` : ``}, liked your post`,
-        //     content: `"${post?.description}"`,
-        //     postId: post._id
-        // })
+        await Notification.create({
+            user: post?.user._id,
+            reactedUser: req.user._id,
+            type: "like",
+            title: `${req?.user?.name} ${post?.likes?.length - 1 > 0 ? `and ${post?.likes?.length - 1} others` : ``}, liked your post`,
+            content: `"${post?.description}"`,
+            postId: post._id
+        })
         //2. Find the login user
         const loginUserId = req?.user?.id;
         console.log(req.user);

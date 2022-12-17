@@ -1,13 +1,16 @@
 import { wrapper } from "../store/store";
 import "../styles/Style.scss";
 import Layout from "../components/Layout/Layout";
-function App({ Component, pageProps }) {
+import { Provider } from "react-redux";
+function App({ Component, ...pageProps }) {
+  const { store, props } = wrapper.useWrappedStore(pageProps);
+
   return (
-    <>
+    <Provider store={store}>
       <Layout>
-        <Component {...pageProps} /> 
+        <Component {...pageProps} />
       </Layout>
-    </>
+    </Provider>
   );
 }
-export default wrapper.withRedux(App);
+export default App;
