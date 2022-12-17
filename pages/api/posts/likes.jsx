@@ -15,14 +15,14 @@ handler.use(isAuth).patch(async (req, res) =>
         const { postId } = req?.body;
         const post = await Post.findById(postId);
 
-        await Notification.create({
-            user: post?.user._id,
-            reactedUser: req.user._id,
-            type: "like",
-            title: `${req?.user?.name} ${post?.likes?.length - 1 > 0 ? `and ${post?.likes?.length - 1} others` : ``}, liked your post`,
-            content: `"${post?.description}"`,
-            postId: post._id
-        })
+        // await Notification.create({
+        //     user: post?.user._id,
+        //     reactedUser: req.user._id,
+        //     type: "like",
+        //     title: `${req?.user?.name} ${post?.likes?.length - 1 > 0 ? `and ${post?.likes?.length - 1} others` : ``}, liked your post`,
+        //     content: `"${post?.description}"`,
+        //     postId: post._id
+        // })
         //2. Find the login user
         const loginUserId = req?.user?.id;
         console.log(req.user);
@@ -47,7 +47,10 @@ handler.use(isAuth).patch(async (req, res) =>
                     runValidators: true,
                 }
             );
-            res.json(post);
+            res.status(200).json({
+                success: true,
+                post
+            });
         }
         //Toggle
         //Remove the user if he has liked the post
@@ -65,8 +68,10 @@ handler.use(isAuth).patch(async (req, res) =>
                     runValidators: true,
                 }
             );
-            
-            res.json(post);
+            res.status(200).json({
+                success: true,
+                post
+            });
         } else
         {
             //add to likes
@@ -82,35 +87,18 @@ handler.use(isAuth).patch(async (req, res) =>
                     runValidators: true,
                 }
             );
-            res.status(200).json(post);
-            
-            
+            res.status(200).json({
+                success: true,
+                post
+            });
         }
-        // const notification = await Notification.find({postId})
-        // console.log("notification", notification.title)
-        // if (notification?.type === "like")
-        // {
-        //     const notifId = notification._id
-        //     await Notification.findByIdAndRemove(notifId)
-        //     await Notification.create({
-        //         user: post?.user._id,
-        //         type: "like",
-        //         title: `${req?.user?.name} ${post?.likes?.length - 1 > 0 ? `and ${post?.likes?.length - 1} others` : ``}, liked your post`,
-        //         content: `"${post?.description}"`,
-        //         postId
-        //     })
-        // } else
-        // {
-            // }
-        
-        
     } catch (err) {
         res.status(500).json({
             message: err.message,
         })
     } finally
     {
-        // await db.disconnect()
+        await db.disconnect()
     }
     
 })
