@@ -45,13 +45,14 @@ handler.get(async (req, res) =>
 // CREATE POST
 // ----------------------------------------------------------------
 
-handler.use(isAuth).post(async (req, res) =>
+handler.post(async (req, res) =>
 {
     await db.connect();
-    const { _id } = req.user;
     
     try
     {
+        const _id = "639b83214a8601c820fe6418"
+        // const { _id } = req.user;
         let images = [];
 
         if (typeof req.body.images === "string")
@@ -86,8 +87,10 @@ handler.use(isAuth).post(async (req, res) =>
     } catch (error)
     {
         res.json(error.message);
+    } finally
+    {
+        await db.disconnect();
     }
-    await db.disconnect();
 })
 
 
