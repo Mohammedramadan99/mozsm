@@ -13,6 +13,7 @@
                 @include flex($dir:column);
                 
                 .overlay {
+                    position: absolute;
                     width: 100%;
                     height: 30%;
                     font-weight: 700;

@@ -432,6 +432,7 @@ const usersSlices = createSlice({
     appErr: null,
     serverErr: null,
     coverPhoto: null,
+    profileImgUpdated: false,
   },
   reducers: {
     reset: (state) => {
@@ -697,6 +698,7 @@ const usersSlices = createSlice({
     });
     builder.addCase(uploadCoverPhototAction.fulfilled, (state, action) => {
       state.coverPhoto = action?.payload;
+      state.profileImgUpdated = true;
       state.loading = false;
       state.appErr = null;
       state.serverErr = null;
@@ -714,6 +716,7 @@ const usersSlices = createSlice({
     });
     builder.addCase(uploadProfilePhototAction.fulfilled, (state, action) => {
       state.profilePhoto = action?.payload;
+      state.profileImgUpdated = true;
       state.loading = false;
       state.appErr = null;
       state.serverErr = null;
