@@ -1,12 +1,10 @@
 import nc from 'next-connect';
 // import Post from '../../../../models/Post';
 
-import fs from "fs"
 import cloudinary from 'cloudinary'
 import db from '../../../../utils/db/dbConnect';
 import { isAuth } from '../../../../utils/auth';
 import User from '../../../../models/User';
-import photoUpload from '../../../../utils/photoUpload';
 export const config = {
     api: {
         bodyParser: {
@@ -24,10 +22,10 @@ cloudinary.config({
     api_key: process.env.CLOUDINARY_API_KEY,
     api_secret: process.env.CLOUDINARY_SECRET_KEY,
 });
-handler.use(isAuth).put(photoUpload.single("image"), async (req, res) =>
+handler.use(isAuth).put(async (req, res) =>
 {
     await db.connect();
-    const { _id } = req.user;
+    const { id } = req.user;
     try
     {
         const result = await cloudinary.v2.uploader.upload(req.body.image, {
@@ -36,7 +34,7 @@ handler.use(isAuth).put(photoUpload.single("image"), async (req, res) =>
         const url = result.secure_url
 
         const foundUser = await User.findByIdAndUpdate(
-            _id,
+            id,
             {
                 profilePhoto: url,
             },

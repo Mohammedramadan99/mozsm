@@ -1,7 +1,4 @@
 import nc from 'next-connect';
-// import Post from '../../../../models/Post';
-
-import fs from "fs"
 import cloudinary from 'cloudinary'
 import db from '../../../../utils/db/dbConnect';
 import { isAuth } from '../../../../utils/auth';
@@ -26,8 +23,7 @@ cloudinary.config({
 handler.use(isAuth).put(async (req, res) =>
 {
     await db.connect();
-    const { _id } = req.user;
-    console.log("back: " + _id)
+    const { id } = req.user;
     try
     {
         const result = await cloudinary.v2.uploader.upload(req?.body?.image, {
@@ -36,16 +32,16 @@ handler.use(isAuth).put(async (req, res) =>
         const url = result?.secure_url
 
         const foundUser = await User.findByIdAndUpdate(
-            _id,
+            id,
             {
                 coverPhoto: url,
             },
             { new: true }
         );
-        res.json(foundUser);
+        res.status(200).json(foundUser);
     } catch (error)
     {
-        res.json(error.message);
+        res.status(500).json({message:error.message});
     }
     await db.disconnect();
 
