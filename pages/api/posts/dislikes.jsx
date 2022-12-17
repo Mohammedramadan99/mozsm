@@ -1,4 +1,3 @@
-import User from '../../../models/User';
 import nc from 'next-connect';
 import { isAuth } from '../../../utils/auth';
 import db from '../../../utils/db/dbConnect';
@@ -17,7 +16,6 @@ handler.use(isAuth).put(async (req, res) =>
     await db.connect();
     try
     {
-        console.log(req.user)
         //1.Find the post to be disLiked
         const { postId } = req?.body;
         const post = await Post.findById(postId);
@@ -58,7 +56,6 @@ handler.use(isAuth).put(async (req, res) =>
                 {
                     $pull: { disLikes: loginUserId },
                     isDisLiked: false,
-                    reactionClass: "none",
                 },
                 {
                     new: true,
@@ -76,7 +73,6 @@ handler.use(isAuth).put(async (req, res) =>
                 {
                     $push: { disLikes: loginUserId },
                     isDisLiked: true,
-                    reactionClass: "dislike",
                 },
                 {
                     new: true,
@@ -97,8 +93,6 @@ handler.use(isAuth).put(async (req, res) =>
     { 
         await db.disconnect()
     }
-    
-
 })
 
 export default handler;

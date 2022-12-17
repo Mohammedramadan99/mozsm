@@ -48,7 +48,6 @@ handler.get(async (req, res) =>
 handler.use(isAuth).post(async (req, res) =>
 {
     await db.connect();
-    
     try
     {
         const { id } = req.user;
