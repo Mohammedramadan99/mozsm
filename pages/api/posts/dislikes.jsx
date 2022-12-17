@@ -37,14 +37,17 @@ handler.use(isAuth).put(async (req, res) =>
                 {
                     $pull: { likes: loginUserId },
                     isLiked: false,
-                    reactionClass: "dislike",
+                    reactionClass: "dislike"
                 },
                 {
                     new: true,
                     runValidators: true,
                 }
             );
-            res.json(post);
+            res.status(200).json({
+                success: true,
+                post
+            });
         }
         //Toggling
         //Remove this user from dislikes if already disliked
@@ -62,7 +65,10 @@ handler.use(isAuth).put(async (req, res) =>
                     runValidators: true,
                 }
             );
-            res.json(post);
+            res.status(200).json({
+                success: true,
+                post
+            });
         } else
         {
             const post = await Post.findByIdAndUpdate(

@@ -7,7 +7,7 @@ import Notification from '../../../models/NotificationsModal';
 import { Notifications } from '@mui/icons-material';
 const handler = nc();
 
-handler.use(isAuth).patch(async (req, res) =>
+handler.use(isAuth).put(async (req, res) =>
 {
     await db.connect();
     try {
