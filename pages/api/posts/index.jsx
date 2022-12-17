@@ -45,14 +45,13 @@ handler.get(async (req, res) =>
 // CREATE POST
 // ----------------------------------------------------------------
 
-handler.post(async (req, res) =>
+handler.use(isAuth).post(async (req, res) =>
 {
     await db.connect();
     
     try
     {
-        const _id = "639b83214a8601c820fe6418"
-        // const { _id } = req.user;
+        const { id } = req.user;
         let images = [];
 
         if (typeof req.body.images === "string")
@@ -80,7 +79,7 @@ handler.post(async (req, res) =>
         req.body.images = imagesLinks;
         const post = await Post.create({
             ...req.body,
-            user: _id,
+            user: id,
             image: imagesLinks[0]?.url
         });
         res.json(post);

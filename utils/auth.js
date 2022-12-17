@@ -1,55 +1,21 @@
-import expressAsyncHandler from "express-async-handler";
 import jwt from "jsonwebtoken";
-import User from "../models/User";
-import db from '../utils/db/dbConnect'
-const signToken = (user) => {
-  console.log("ss");
-  console.log(process.env.JWT_SECRET);
-  return jwt.sign(
-    {
-      _id: user._id,
-      name: user.name,
-      email: user.email,
-      isAdmin: user.isAdmin,
-    },
 
-    process.env.JWT_SECRET,
-    {
-      expiresIn: "30d",
+export const isAuth = async (req, res, next) => {
+  try {
+    let token = req.headers.authorization.split(" ")[1];
+
+    if (!token) {
+      return res.status(403).send("Access Denied");
     }
-  );
-};
-const isAuth = expressAsyncHandler(async (req, res, next) =>
-{
-  await db.connect()
-  let token;
-  if (req?.headers?.authorization?.startsWith("Bearer")) {
-    token = req.headers.authorization.split(" ")[1];
-    try {
-      if (token) {
-        const decoded = jwt.verify(token, process.env.JWT_KEY);
-        const { id } = decoded
-        //find the user by id
-        const user = await User.findById(id).select("-password");
-        console.log("is Auth: " + user);
-        //attach the user to the request object
-        req.user = user;
-        next();
-      }
-    } catch (error) {
-      throw new Error(error.message);
+
+    if (token.startsWith("Bearer ")) {
+      token = token.slice(7, token.length).trimLeft();
     }
-  } else {
-    throw new Error("There is no token attached to the header");
-  }
-  await db.disconnect();
-});
-const isAdmin = async (req, res, next) => {
-  if (req.user.isAdmin) {
+
+    const verified = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = verified;
     next();
-  } else {
-    res.status(401).send({ message: "User is not admin" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 };
-
-export { signToken, isAuth, isAdmin };

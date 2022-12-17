@@ -12,16 +12,17 @@ export const config = {
 }
 const handler = nc();
 
-handler.put(async (req, res) =>
+handler.use(isAuth).put(async (req, res) =>
 {
     await db.connect();
     try
     {
+        console.log(req.user)
         //1.Find the post to be disLiked
         const { postId } = req?.body;
         const post = await Post.findById(postId);
         //2.Find the login user
-        const loginUserId = req?.user?._id;
+        const loginUserId = req?.user?.id;
         //3.Check if this user has already disLikes
         const isDisLiked = post?.isDisLiked;
         //4. Check if already like this post
