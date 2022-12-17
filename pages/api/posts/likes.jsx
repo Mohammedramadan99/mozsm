@@ -25,7 +25,7 @@ handler.use(isAuth).patch(async (req, res) =>
         // })
         //2. Find the login user
         const loginUserId = req?.user?.id;
-        console.log(req.user);
+        console.log("user Id", loginUserId )
         //3. Find is this user has liked this post?
         const isLiked = post?.isLiked;
         //4.Chech if this user has dislikes this post
