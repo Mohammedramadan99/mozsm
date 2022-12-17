@@ -5,11 +5,17 @@ import db from '../../../utils/db/dbConnect';
 import Post from '../../../models/Post';
 import Notification from '../../../models/NotificationsModal';
 import { Notifications } from '@mui/icons-material';
+import { MongoClient } from "mongodb";
+
 const handler = nc();
 
 handler.use(isAuth).put(async (req, res) =>
 {
-    await db.connect();
+    // await db.connect();
+    const client = await MongoClient.connect(
+        'mongodb+srv://Ecommerce:m1964118@cluster0.7n14b.mongodb.net/mozSocialMedia',
+        { useNewUrlParser: true }
+    );
     try {
         //1.Find the post to be liked
         const { postId } = req?.body;
@@ -100,6 +106,7 @@ handler.use(isAuth).put(async (req, res) =>
     } finally
     {
         // await db.disconnect()
+        client.close()
     }
     
 })
