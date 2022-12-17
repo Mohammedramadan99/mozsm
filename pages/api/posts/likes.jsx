@@ -32,6 +32,7 @@ handler.use(isAuth).patch(async (req, res) =>
         const alreadyDisliked = post?.disLikes?.find(
             (userId) => userId?.toString() === loginUserId?.toString()
         );
+        console.log("alreadyDisliked", alreadyDisliked)
         //5.remove the user from dislikes array if exists
         if (alreadyDisliked)
         {
@@ -40,7 +41,7 @@ handler.use(isAuth).patch(async (req, res) =>
                 {
                     $pull: { disLikes: loginUserId },
                     isDisLiked: false,
-
+                    reactionClass: "like"
                 },
                 {
                     new: true,
@@ -98,7 +99,7 @@ handler.use(isAuth).patch(async (req, res) =>
         })
     } finally
     {
-        await db.disconnect()
+        // await db.disconnect()
     }
     
 })
