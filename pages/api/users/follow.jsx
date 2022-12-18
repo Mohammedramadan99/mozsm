@@ -8,7 +8,7 @@ handler.use(isAuth).put(async (req, res) =>
 {
     await db.connect();
     const { followId } = req.body;
-    const loginUserId = req.user.id;
+    const loginUserId = req.user._id;
     console.log(followId)
 
     //find the target user and check if the login id exist

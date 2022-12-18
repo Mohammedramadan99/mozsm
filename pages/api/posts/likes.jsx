@@ -22,7 +22,7 @@ handler.use(isAuth).put(async (req, res) =>
         const { postId } = req?.body;
         const post = await Post.findById(postId);
         //2. Find the login user
-        const loginUserId = req?.user?.id;
+        const loginUserId = req?.user?._id;
         //3. Find is this user has liked this post?
         const isLiked = post?.isLiked;
         //4.Chech if this user has dislikes this post

@@ -50,7 +50,7 @@ handler.use(isAuth).post(async (req, res) =>
     await db.connect();
     try
     {
-        const { id } = req.user;
+        const { _id } = req.user;
         let images = [];
 
         if (typeof req.body.images === "string")

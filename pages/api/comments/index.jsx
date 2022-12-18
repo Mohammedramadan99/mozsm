@@ -19,7 +19,7 @@ handler.get(async (req, res) =>
     {
         const post = req?.query?.post
 
-        const comments = post ? await Comment.find({ post }).sort("-created") : await Comment.find({}).sort("-created");
+        const comments = post ? await Comment.find({ post }).populate("user").sort("-created") : await Comment.find({}).sort("-created")
         
         res.json(comments);
     } catch (error)
@@ -48,18 +48,20 @@ handler.use(isAuth).post(async (req, res) =>
             user,
             description,
         });
-        const post = await Post.findById(postId).populate('comments');
-        await Notification.create({
-            user: post?.user._id,
-            type: "comment",
-            title:
-                `${user?.name}
-                ${(post?.comments?.length - 1) > 0 ?
-                    `and ${post?.comments?.length - 1} others` : ``},
-                    commented on your post: "${comment.description.length > 20 ?
-                    comment.description.slice(0, 20) + "..." : comment.description}"`,
-            postId: post._id
-        })
+        console.log("comment", comment)
+        // const post = await Post.findById(postId).populate('comments');
+        // await Notification.create({
+        //     reactedUser: post?.user._id,
+        //     user:req.user._id,
+        //     type: "comment",
+        //     title:
+        //         `${user?.name}
+        //         ${(post?.comments?.length - 1) > 0 ?
+        //             `and ${post?.comments?.length - 1} others` : ``},
+        //             commented on your post: "${comment.description.length > 20 ?
+        //             comment.description.slice(0, 20) + "..." : comment.description}"`,
+        //     postId: post._id
+        // })
         // console.log("comment desc ", comment ? comment : "no comment")
         res.json(comment);
     } catch (error)

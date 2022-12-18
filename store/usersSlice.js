@@ -441,6 +441,7 @@ const usersSlices = createSlice({
       state.coverPhoto = null;
       state.profilePhoto = null;
       state.registered = null;
+      state.profileImgUpdated = false
     },
   },
   extraReducers: (builder) => {

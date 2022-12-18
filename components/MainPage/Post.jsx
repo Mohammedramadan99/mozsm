@@ -45,7 +45,6 @@ function Post({ direction, post, profile })
         }
         dispatch(createCommentAction(commentData))
         setCommentContent("")
-        console.log(commentData)
     }
     useEffect(() =>
     {
@@ -76,8 +75,7 @@ function Post({ direction, post, profile })
             dispatch(getCommentsAction())
             setPostComments(comments?.filter(item => item.post === post._id))
         }
-        console.log(postComments)
-    }, [])
+    }, [dispatch, post,commentCreated])
     
     return (
         <div className={`${direction}__posts__container__container`} style={{position:'relative'}}>

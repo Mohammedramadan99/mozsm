@@ -25,7 +25,7 @@ cloudinary.config({
 handler.use(isAuth).put(async (req, res) =>
 {
     await db.connect();
-    const { id } = req.user;
+    const { _id } = req.user;
     try
     {
         const result = await cloudinary.v2.uploader.upload(req.body.image, {

@@ -9,7 +9,7 @@ handler.use(isAuth).put(async (req, res) =>
     await db.connect();
     try {
         const { unFollowId } = req.body;
-        const loginUserId = req.user.id;
+        const loginUserId = req.user._id;
         console.log(unFollowId)
         await User.findByIdAndUpdate(
             unFollowId,

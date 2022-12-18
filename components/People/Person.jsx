@@ -12,7 +12,7 @@ function Person({ dir, user })
             </div>
             <div className={`${dir}__person__info`}>
                 <div className={`${dir}__person__info__name`}>
-                    {user?.firstName} {user?.lastName}
+                    {user?.name}
                 </div>
                 <Link href={`/user/${user._id}`} className={`${dir}__person__info__btn`}>
                     profile
