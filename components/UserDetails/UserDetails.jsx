@@ -100,7 +100,7 @@ function UserDetails()
                                 </div>
                                 }
                                 {profile?.coverPhoto ? (
-                                    <div className="img--container">
+                                    <div className="img--parent">
                                         <Image src={profile?.coverPhoto} alt="cover" objectFit='cover' layout='fill' />
                                     </div>
                                 ) : (

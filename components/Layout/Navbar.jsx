@@ -22,9 +22,8 @@ function Navbar()
     const router = useRouter()
     let dropdownref = useRef()
     const store = useSelector(state => state?.users)
+    const { userAuth, loggedOut,usersList } = store
     const { allNotifications } = useSelector(state => state?.notifications)
-    const { userAuth, loggedOut } = store
-
     const [icons, setIcons] = useState([
         {
             icon: <HomeIcon />,
@@ -42,12 +41,11 @@ function Navbar()
             link: `/user/${userAuth?._id}`
         }
     ])
-
     const [startSearch, setStartSearch] = useState(false)
     const [activePage, setActivePage] = useState('Home')
     const [opened, setOpened] = useState(false)
     const [notificationOpened, setNotificationOpened] = useState(false)
-
+    const currUser = usersList?.find(u => u._id === userAuth._id)
     const logoutHandler = () =>
     {
         dispatch(logoutAction())
@@ -79,7 +77,7 @@ function Navbar()
     useEffect(() => {
         dispatch(fetchNotificationsAction())
     }, [])
-    
+    console.log("currUser", currUser)
     return (
         <div className="mainNav">
             <div className="nav-container" >
@@ -107,9 +105,9 @@ function Navbar()
                 </div>
                 <div className=" mainNav__right" ref={dropdownref}>
                     <Link href={`/user/${userAuth?._id}`} className="mainNav__right__item nav-icon" legacyBehavior >
-                            {userAuth?.profilePhoto ? (
+                        {currUser?.profilePhoto ? (
                                 <div className="mainNav__right__item img__rounded">
-                                    <Image src={userAuth?.profilePhoto} width={100} height={100} alt="personal img" />
+                                <Image src={currUser?.profilePhoto} width={100} height={100} alt="personal img" />
                                 </div>
                         ) : (
                                 <>

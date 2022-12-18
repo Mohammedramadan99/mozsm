@@ -10,7 +10,9 @@ function WritePost({ dir, userDetails })
 {
     const dispatch = useDispatch()
 
-    const { userAuth } = useSelector(state => state.users)
+    const { userAuth, usersList } = useSelector(state => state.users)
+    const currUser = usersList?.find(u => u._id === userAuth._id)
+
     const { isCreated, loading } = useSelector(state => state.posts)
     // const { categoryList } = useSelector(state => state?.category)
     const [message, setMessage] = useState('')
@@ -106,7 +108,7 @@ function WritePost({ dir, userDetails })
             <>
                 <div className={`${dir}__writePost__user`}>
                     <div className={`${dir}__writePost__user__img img__rounded`}>
-                        {userAuth?.profilePhoto && <Image width={100} height={100} src={userAuth?.profilePhoto} alt="you" />}
+                        {currUser?.profilePhoto && <Image width={100} height={100} src={currUser?.profilePhoto} alt="you" />}
                     </div>
                     <div className={`${dir}__writePost__user__name`}>
                         {dir === "userDetails" ? `${userDetails?.name}` : `${userAuth?.name}`}

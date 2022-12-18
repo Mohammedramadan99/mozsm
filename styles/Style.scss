@@ -73,7 +73,9 @@ body {
     width: 100%;
     height: 500px;
 }
-
+.mainAlert{
+    background-color: $main_color;
+}
 hr {
     margin: 20px 0;
 }
@@ -101,16 +103,30 @@ input {
 }
 
 .logo__litter {
-    background-color: $main_color;
-    width: 40px;
-    height: 40px;
-    border-bottom-left-radius: 20px;
-    border-top-right-radius: 20px;
-    color: #fff;
-    padding: 10px;
-    @include flex();
-    font-weight: 400;
-    font-size: 20px;
+    display: flex;
+    align-items: flex-end;
+    column-gap: rem(5);
+    >div {
+        background-color: $main_color;
+            width: 40px;
+            height: 40px;
+            border-bottom-left-radius: 20px;
+            border-top-right-radius: 20px;
+            border-bottom-right-radius: 7px;
+            border-top-left-radius: 7px;
+            color: #fff !important;
+            padding: 10px;
+            @include flex();
+            font-weight: 400;
+            font-size: 15px;
+    }
+    span{
+        text-transform: uppercase;
+        color: $main_color;
+        font-weight: 500;
+        font-size: rem(12)
+
+    }
 }
 
 .img__rounded {

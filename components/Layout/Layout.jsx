@@ -1,5 +1,6 @@
 import dynamic from "next/dynamic";
 import Head from "next/head";
+import MainAlert from "./MainAlert";
 // import { ToastContainer } from "react-toastify";
 // import { Menu } from "@headlessui/react";
 // import "react-toastify/dist/react-toastify.css";
@@ -32,6 +33,7 @@ export default function Layout({ title, children })
 
             <div className="flex min-h-screen flex-col justify-between ">
                 <header>
+                    <MainAlert/>
                     <Navbar />
                 </header>
                 <main>{children}</main>
