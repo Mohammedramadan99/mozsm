@@ -54,7 +54,7 @@ handler.use(isAuth).post(async (req, res) =>
         let images = [];
 
         if (typeof req.body.images === "string")
-        {u
+        {
             images.push(req.body.images);
         } else
         {
@@ -78,7 +78,7 @@ handler.use(isAuth).post(async (req, res) =>
         req.body.images = imagesLinks;
         const post = await Post.create({
             ...req.body,
-            user: id,
+            user: _id,
             image: imagesLinks[0]?.url
         });
         res.json(post);
