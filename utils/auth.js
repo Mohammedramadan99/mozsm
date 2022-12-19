@@ -16,7 +16,7 @@ export const isAuth = async (req, res, next) => {
     }
 
     const verified = jwt.verify(token, process.env.JWT_SECRET);
-      const user = await User.findById(verified?.id).select("-password");
+    const user = await User.findById(verified?.id).select("-password");
     req.user = user;
     next();
   } catch (err) {

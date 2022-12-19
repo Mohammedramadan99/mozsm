@@ -30,7 +30,7 @@ handler.use(isAuth).put(async (req, res) =>
 
         res.status(200).json("You have successfully unfollowed this user");
     } catch (err) {
-        res.statusCode(500).json(err.message)
+        res.status(500).json(err.message)
     }
     
     await db.disconnect();
