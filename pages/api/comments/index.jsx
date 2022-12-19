@@ -66,7 +66,7 @@ handler.use(isAuth).post(async (req, res) =>
         res.json(comment);
     } catch (error)
     {
-        res.json(error);
+        res.json(error.message);
     }
     await db.disconnect();
 })
