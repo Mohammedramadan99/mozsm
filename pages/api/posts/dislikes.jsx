@@ -20,6 +20,7 @@ handler.use(isAuth).put(async (req, res) =>
         const { postId } = req?.body;
         const post = await Post.findById(postId);
         //2.Find the login user
+        console.log("post", post)
         const loginUserId = req?.user?._id;
         //3.Check if this user has already disLikes
         const isDisLiked = post?.isDisLiked;
