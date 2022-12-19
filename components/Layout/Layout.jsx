@@ -1,6 +1,7 @@
 import dynamic from "next/dynamic";
 import Head from "next/head";
 import MainAlert from "./MainAlert";
+import ErrorBoundary from '../../utils/ErrorBoundary'
 // import { ToastContainer } from "react-toastify";
 // import { Menu } from "@headlessui/react";
 // import "react-toastify/dist/react-toastify.css";
@@ -32,11 +33,13 @@ export default function Layout({ title, children })
             </Head>
 
             <div className="flex min-h-screen flex-col justify-between ">
-                <header>
-                    <MainAlert/>
-                    <Navbar />
-                </header>
-                <main>{children}</main>
+                <ErrorBoundary>
+                    <header>
+                        <MainAlert/>
+                        <Navbar />
+                    </header>
+                    <main>{children}</main>
+                </ErrorBoundary>
             </div>
         </>
     );
