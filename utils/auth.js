@@ -1,8 +1,10 @@
 import jwt from "jsonwebtoken";
 import User from "../models/User";
-
+import db from '../utils/db/dbConnect'
 export const isAuth = async (req, res, next) => {
-  try {
+  await db.connect()
+  try
+  {
     let token = req.headers.authorization.split(" ")[1];
 
     if (!token) {
@@ -14,14 +16,11 @@ export const isAuth = async (req, res, next) => {
     }
 
     const verified = jwt.verify(token, process.env.JWT_SECRET);
-    console.log("verified", verified);
-    const id = verified?.id;
-    console.log("id", id)
-    const user = await User.findById(id).select("-password");
-    console.log("user", user)
+      const user = await User.findById(verified?.id).select("-password");
     req.user = user;
     next();
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
+  await db.disconnect();
 };
