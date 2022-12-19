@@ -14,7 +14,7 @@ const handler = nc();
 
 handler.use(isAuth).put(async (req, res) =>
 {
-    await db.connect();
+    // await db.connect();
     try
     {
         console.log("we're in #1")

@@ -22,8 +22,9 @@ export const isAuth = async (req, res, next) => {
     next();
   } catch (err) {
     res.status(500).json({ error: err.message });
-  } finally
-  {
-    await db.disconnect();
   }
+  // finally
+  // {
+  //   // await db.disconnect();
+  // }
 };

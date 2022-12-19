@@ -15,7 +15,7 @@ handler.use(isAuth).put(async (req, res) =>
 {
     try
     {
-        await db.connect();
+        // await db.connect();
         //1.Find the post to be disLiked
         const { postId } = req?.body;
         const post = await Post.findById(postId);
@@ -90,7 +90,8 @@ handler.use(isAuth).put(async (req, res) =>
         res.status(500).json({
             message: error.message,
         })
-    } finally
+    }
+    finally
     { 
         await db.disconnect()
     }
