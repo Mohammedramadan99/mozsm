@@ -2,9 +2,9 @@ import jwt from "jsonwebtoken";
 import User from "../models/User";
 import db from '../utils/db/dbConnect'
 export const isAuth = async (req, res, next) => {
-  await db.connect()
   try
   {
+    await db.connect()
     let token = req.headers.authorization.split(" ")[1];
 
     if (!token) {

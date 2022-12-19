@@ -13,9 +13,9 @@ const handler = nc();
 
 handler.use(isAuth).put(async (req, res) =>
 {
-    await db.connect();
     try
     {
+        await db.connect();
         //1.Find the post to be disLiked
         const { postId } = req?.body;
         const post = await Post.findById(postId);
