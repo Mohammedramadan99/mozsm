@@ -25,6 +25,7 @@ export default function Followers()
         <div className='People__mainPage__Followers'>
             <div className="People__mainPage__Followers__title">Followers</div>
             <div className="People__mainPage__Followers__list">
+                {followers.length < 1 && <div style={{textAlign:"center"}}> no followers found </div>}
                 {followers.map((user, i) => <Person key={i} dir="People__mainPage__Followers__list" user={user} />)}
             </div>
         </div>

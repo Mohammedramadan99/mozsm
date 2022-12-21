@@ -1,6 +1,9 @@
 import dynamic from "next/dynamic";
 import Head from "next/head";
-import MainAlert from "./MainAlert";
+const MainAlert = dynamic(
+    () => import('./MainAlert'),
+    { ssr: false }
+)
 import ErrorBoundary from '../../utils/ErrorBoundary'
 // import { ToastContainer } from "react-toastify";
 // import { Menu } from "@headlessui/react";

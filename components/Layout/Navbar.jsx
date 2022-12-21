@@ -45,7 +45,7 @@ function Navbar()
     const [activePage, setActivePage] = useState('Home')
     const [opened, setOpened] = useState(false)
     const [notificationOpened, setNotificationOpened] = useState(false)
-    const currUser = usersList?.find(u => u._id === userAuth._id)
+    const currUser = usersList?.find(u => u?._id === userAuth?._id)
     const logoutHandler = () =>
     {
         dispatch(logoutAction())

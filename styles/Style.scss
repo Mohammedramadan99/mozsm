@@ -76,6 +76,46 @@ body {
 .mainAlert{
     background-color: $main_color;
 }
+.version{
+    position: relative;
+    p{
+        user-select: none;
+        &:hover{
+            .info{
+                visibility: visible;
+                opacity: 1;
+                left: 20;
+            }
+            
+        }
+        
+        .info{
+            position: absolute;
+            width: 200px;
+            background-color: #fff;
+            top: -170px;
+            padding: 10px;
+            text-align: left;
+            border-radius: 10px;
+            font-size: 12px;
+            left: -400;
+            opacity: 0;
+            transition: $reg_transition;
+            visibility: hidden;
+            h3{
+                font-weight: 600;
+                padding-bottom: rem(10) ;
+            }
+            ul{
+                li{
+                    font-weight: 500;
+                    margin-bottom: rem(10);
+                    @include flex($justify:"flex-start");
+                }
+            }
+        }
+    }
+}
 hr {
     margin: 20px 0;
 }
