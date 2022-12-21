@@ -6,7 +6,7 @@ function MainAlert() {
       <div className='mainAlert' style={{padding:"5px",fontSize: "12px",fontWeight:"600",color:"white",textAlign:"center"}}>
         some actions will be slow because I use the Shared Cluster of mongodb (free)
       </div>
-      <div className='version' style={{ position: "fixed", bottom: "0", color: "#e4861b", fontWeight: "700", padding: "5px", fontSize: "15px", textAlign: "center", zIndex: "1000" }}>
+      <div className='version' style={{ position: "fixed", bottom: "0", color: "#e4861b", fontWeight: "700", padding: "5px", fontSize: "15px", textAlign: "center", zIndex: "2000" }}>
         <p>
           v 1.5
           <div className="info">

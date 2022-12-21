@@ -12,8 +12,8 @@ export default function Login()
     const { userAuth, loading, serverErr, appErr } = useSelector(state => state?.users);
 
     const [formData, setFormDate] = useState({
-        email: "",
-        password: "",
+        email: "mo@gmail.com",
+        password: "mmmmmmmm",
     });
     const onChange = (e) =>
     {
@@ -40,8 +40,8 @@ export default function Login()
             </div>
             <div className="login__right">
                 <form className="login__right__form" onSubmit={submitHandler}>
-                    <input type="text" placeholder='email' name="email" onChange={onChange} />
-                    <input type="password" placeholder='password' name="password" onChange={onChange} />
+                    <input type="text" placeholder='email' value={formData.email} name="email" onChange={onChange} />
+                    <input type="password" placeholder='password' name="password" value={formData.password} onChange={onChange} />
                     <input type="submit" className='login__right__form__submit' value="login" />
 
                     <Link href="#" className="login__right__form__link">
