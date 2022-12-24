@@ -104,14 +104,14 @@ function Navbar()
                     {/* </div> */}
                 </div>
                 <div className=" mainNav__right" ref={dropdownref}>
-                    <Link href={`/user/${userAuth?._id}`} className="mainNav__right__item nav-icon" legacyBehavior >
+                    <Link href={`/user/${currUser?._id}`} className="mainNav__right__item nav-icon" legacyBehavior >
                         {currUser?.profilePhoto ? (
                                 <div className="mainNav__right__item img__rounded">
                                 <Image src={currUser?.profilePhoto} width={100} height={100} alt="personal img" />
                                 </div>
                         ) : (
                                 <>
-                                    {userAuth?.firstName && userAuth.firstName[0]}
+                                    {userAuth?.name && userAuth.name[0]}
                                 </>
                             )}
                     </Link>
