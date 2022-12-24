@@ -34,10 +34,7 @@ export default function Layout({ title, children })
     return (
         <>
             <Head>
-                <title>Moz SM</title>
-                <meta name="description" content="moz social media website" />
                 <meta name="viewport" content="width=device-width, initial-scale=1" />
-                <link rel="icon" href="/favicon.ico" />
             </Head>
 
             <div className="flex min-h-screen flex-col justify-between ">

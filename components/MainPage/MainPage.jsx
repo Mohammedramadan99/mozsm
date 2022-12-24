@@ -16,13 +16,13 @@ function MainPage({ posts })
     // const { appErr: posterror } = useSelector(state => state.post)
     // const { appErr: commenterror } = useSelector(state => state.comment)
     
-    useEffect(() =>
-    {
-        if (userAuth === null)
-        {
-            router.push('/login')
-        }
-    }, [])
+    // useEffect(() =>
+    // {
+    //     if (userAuth === null)
+    //     {
+    //         router.push('/login')
+    //     }
+    // }, [])
 
     return (
         <div className='mainPage'>
