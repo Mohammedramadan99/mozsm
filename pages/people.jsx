@@ -6,6 +6,9 @@ import { fetchUsersAction } from '../store/usersSlice'
 import dynamic from 'next/dynamic'
 const Followers = dynamic(() => import('../components/People/Followers'))
 const MayKnow = dynamic(() => import('../components/People/MayKnow'))
+import {motion} from 'framer-motion'
+import { fadeInUp, stagger, routerAnimation } from '../utils/animations'
+
 function People()
 {
     const dispatch = useDispatch()
@@ -29,26 +32,29 @@ function People()
         dispatch(fetchUsersAction())
     }, [])
     return (
-        <div className='People'>
+        <motion.div variants={routerAnimation}
+            initial="initial"
+            animate="animate"
+            exit="exit" className='People'>
             <div className="People__sidebar">
                 <div className="People__sidebar__title"> people </div>
-                <div className="People__sidebar__list">
-                    {sidebarData?.map(p => (
-                        <div className={show === p.name ? `People__sidebar__list__item active` : "People__sidebar__list__item "} onClick={() => peopleHandler(p.name)}>
+                <motion.div variants={stagger} initial="initial" animate="animate" className="People__sidebar__list">
+                    {sidebarData?.map((p,i) => (
+                        <motion.div variants={fadeInUp} key={i} className={show === p.name ? `People__sidebar__list__item active` : "People__sidebar__list__item "} onClick={() => peopleHandler(p.name)}>
                             <div className="People__sidebar__list__item__icon">
                                 {p.icon}
                             </div>
                             <div className="People__sidebar__list__item__name">
                                 {p.name}
                             </div>
-                        </div>
+                        </motion.div>
                     ))}
-                </div>
+                </motion.div>
             </div>
             <div className="People__mainPage">
                 {show === "followers" ? <Followers /> : show === "home" && <MayKnow />}
             </div>
-        </div>
+        </motion.div>
     )
 }
 

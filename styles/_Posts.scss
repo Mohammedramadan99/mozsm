@@ -6,13 +6,18 @@
 
     &__posts {
         &__container {
+            display: grid;
+            grid-template-columns: 1fr;
+            align-items: end;
             &__post {
                 margin-top: 20px;
                 background-color: #fff;
                 transition: $reg_transition;
                 overflow: hidden;
                 box-shadow: $light_shadow;
-
+                @media (max-width: 768px) {
+                    
+                }
                 &__userInfo {
                     padding: 15px;
                     display: flex;

@@ -78,7 +78,7 @@ body {
 }
 .version{
     position: relative;
-    p{
+    .box{
         user-select: none;
         &:hover{
             .info{

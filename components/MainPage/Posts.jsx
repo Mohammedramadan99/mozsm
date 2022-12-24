@@ -60,13 +60,23 @@ function Posts({ direction, user })
                     </div>
                 )}
             {direction === "mainPage__middle" ? (
-                postLists?.map(p => <Post key={p._id} post={p} direction={direction} />)
+                    postLists?.map(p => (
+                        <div key = { p._id } className={`${direction}__posts__container`} style={{ position: 'relative' }}>
+                            <Post  post = { p } direction = { direction } />
+                        </div>
+                    )
+                        )
 
             ) : direction === "user__bottom__postsGroup" && (
                 !user?.posts || user?.posts?.length === 0 ? (
                     <p style={{ textAlign: "center", textTransform: "capitalize", marginTop: "40px" }}>there is not posts yet</p>
                 ) : (
-                    user?.posts?.map(p => <Post key={p._id} direction={direction} profile={profile} post={ p}  />)
+                    user?.posts?.map(p => (
+                    <div key = { p._id } className={`${direction}__posts__container`} style={{ position: 'relative' }}>
+                        <Post  direction = { direction } profile = { profile } post = { p } />
+                    </div>
+
+                    ))
                 )
             )}
         </div>

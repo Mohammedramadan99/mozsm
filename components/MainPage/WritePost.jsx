@@ -5,7 +5,8 @@ import { createpostAction, reset } from '../../store/postsSlice'
 import { useDispatch, useSelector } from 'react-redux';
 import UserDetails from '../UserDetails/UserDetails';
 import Image from 'next/image';
-
+import { motion } from "framer-motion"
+import {fadeInLeft} from '../../utils/animations'
 function WritePost({ dir, userDetails })
 {
     const dispatch = useDispatch()
@@ -102,7 +103,7 @@ function WritePost({ dir, userDetails })
 
     // === "mainPage__middle" ? "mainPage__middle__writePost" : dir === "userDetails" && "userDetails__writePost"
     return (
-        <div className={`${dir}__writePost`}>
+        <motion.div variants={fadeInLeft} initial="initial" animate="animate" className={`${dir}__writePost`}>
             {/* {loading ? <p>loading ... </p> : ( */}
             <p> {message} </p>
             <>
@@ -145,7 +146,7 @@ function WritePost({ dir, userDetails })
                 </div>
             </>
             {/* )} */}
-        </div>
+        </motion.div>
     )
 }
 

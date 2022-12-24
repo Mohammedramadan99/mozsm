@@ -78,7 +78,7 @@ function Post({ direction, post, profile })
     }, [dispatch, post,commentCreated])
     
     return (
-        <div className={`${direction}__posts__container__container`} style={{position:'relative'}}>
+        <>
             <div className={`${direction}__posts__container__post`}>
                 <Link href={post ? `/user/${post?.user?._id}` : profile && `/user/${profile._id}`} className={`${direction}__posts__container__post__userInfo`}>
                     <>
@@ -151,10 +151,7 @@ function Post({ direction, post, profile })
                     {direction === "user__bottom__postsGroup" ? postComments?.map((comment, inx) => <Comment key={inx} comment={comment} />) : post?.comments?.map((comment, inx) => <Comment key={inx} comment={comment} />)}
                 </div>
             </div>
-            {/* {serverErr || appErr ? (
-                <Alert content={appErr} type='error' />
-            ) : null} */}
-        </div>
+        </>
     )
 }
 

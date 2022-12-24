@@ -6,11 +6,32 @@
     @media (max-width: 768px) {
         grid-template-columns: 4fr 5fr;
     }
+    @media (max-width: 500px) {
+        grid-template-columns: 1fr;
+        .People__sidebar{
+            position: relative;
+            top: 0;
+            height: 100%;
+            &__title{
+                font-size: rem(18);
+            }
+            &__list{
+                &__item{
+                    font-size: rem(12);
+                    &__icon{
 
+                    }
+                    &__name{
+
+                    }
+                }
+            }
+        }
+    }
     &__sidebar {
         position: sticky;
-        top: 60px;
-        height: calc(100vh - 60px);
+        top: 0;
+        height: calc(100vh);
         background-color: #fff;
         box-shadow: $light_shadow;
         padding: 10px;
@@ -35,7 +56,12 @@
                 &.active {
                     background-color: #f1f1f1;
                 }
-
+                &.active {
+                    .People__sidebar__list__item__name{
+                        transform: scale(1.2);
+                        margin-left: rem(10);
+                    }
+                }
                 &__icon {
                     margin-right: 10px;
                     background-color: $main_color;
@@ -46,6 +72,8 @@
                 &__name {
                     text-transform: capitalize;
                     font-weight: 700;
+                    transform: scale(1.1);
+                    transition: $reg_transition;
                 }
             }
 
@@ -54,11 +82,28 @@
 
     &__mainPage {
         padding: 20px 40px;
+        @media (max-width: 500px) {
+            .People{
+                &__mainPage{
+                    &__mayKnow{
+                        &__title{
+                            font-size: rem(18);
+                            text-align: left;
+                        }
+                    }
+                    &__Followers{
+                        &__list{
+    
+                        }
+                    } 
+                }
 
+            }
+        }
         &__Followers,
         &__mayKnow {
             &__title {
-                padding: 0 10px;
+                // padding: 0 10px;
                 font-size: 25px;
                 font-weight: 900;
                 text-transform: capitalize;
@@ -69,8 +114,6 @@
                 grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
                 gap: 30px;
                 padding-top: 20px;
-
-
             }
         }
     }

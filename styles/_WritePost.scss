@@ -5,7 +5,8 @@
     &__writePost {
         background-color: #fff;
         padding: 20px;
-
+        display: grid;
+        grid-template-columns: 1fr;
         &__user {
             display: flex;
             align-items: center;
@@ -47,11 +48,14 @@
                     border: none;
                 }
             }
+            input{
+                width: 100%;
+            }
         }
 
         &__bottom {
-            @include flex($justify: space-between);
-
+            @include flex($justify: center);
+            flex-wrap: wrap;
             &__postPhoto {
                 display: flex;
                 align-items: center;
@@ -85,6 +89,7 @@
                 font-weight: 700;
                 text-transform: capitalize;
                 transition: $reg_transition;
+                border: none;
                 cursor: pointer;
 
                 &:hover {

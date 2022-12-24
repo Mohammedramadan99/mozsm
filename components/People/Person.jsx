@@ -1,12 +1,14 @@
 import Link from 'next/link'
 import React from 'react'
 import { useSelector } from 'react-redux'
+import { motion } from 'framer-motion'
+import { fadeInUp, stagger } from '../../utils/animations'
 function Person({ dir, user })
 {
-    const { userAuth } = useSelector(state => state.users)
+    // const { userAuth } = useSelector(state => state.users)
 
     return (
-        <div className={`${dir}__person`}>
+        <motion.div variants={fadeInUp} initial="initial" animate="animate"  className={`${dir}__person`}>
             <div className={`${dir}__person__img`}>
                 <img src={user?.profilePhoto} alt="profilePhoto" />
             </div>
@@ -18,7 +20,7 @@ function Person({ dir, user })
                     profile
                 </Link>
             </div>
-        </div>
+        </motion.div>
     )
 }
 

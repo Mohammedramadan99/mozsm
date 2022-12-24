@@ -1,6 +1,8 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 import Person from './Person'
+import { motion } from 'framer-motion'
+import { fadeInUp, stagger } from '../../utils/animations'
 
 function MayKnow()
 {
@@ -11,9 +13,9 @@ function MayKnow()
     return (
         <div className='People__mainPage__mayKnow'>
             <div className="People__mainPage__mayKnow__title">people you may know</div>
-            <div className="People__mainPage__mayKnow__list">
+            <motion.div variants={stagger} initial="initial" animate="animate" className="People__mainPage__mayKnow__list">
                 {usersFiltered?.map((user, i) => <Person key={i} dir="People__mainPage__mayKnow__list" user={user} />)}
-            </div>
+            </motion.div>
         </div>
     )
 }

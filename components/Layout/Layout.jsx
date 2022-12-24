@@ -4,7 +4,6 @@ const MainAlert = dynamic(
     () => import('./MainAlert'),
     { ssr: false }
 )
-import ErrorBoundary from '../../utils/ErrorBoundary'
 // import { ToastContainer } from "react-toastify";
 // import { Menu } from "@headlessui/react";
 // import "react-toastify/dist/react-toastify.css";
@@ -15,6 +14,12 @@ const Navbar = dynamic(
     () => import('./Navbar'),
     { ssr: false }
 )
+// import { Open_Sans } from "@next/font/google";
+// const open_Sans = Open_Sans({
+//     weight: '400',
+//     subsets: ['latin'],
+
+// });
 export default function Layout({ title, children })
 {
     // const { status, data: session } = useSession();
@@ -36,13 +41,11 @@ export default function Layout({ title, children })
             </Head>
 
             <div className="flex min-h-screen flex-col justify-between ">
-                <ErrorBoundary>
                     <header>
                         <MainAlert/>
                         <Navbar />
                     </header>
                     <main>{children}</main>
-                </ErrorBoundary>
             </div>
         </>
     );

@@ -6,6 +6,8 @@ import SchoolIcon from '@mui/icons-material/School';
 import EditIcon from '@mui/icons-material/Edit';
 import {updateUserAction,userProfileAction} from '../../store/usersSlice'
 import FollowPersons from './FollowPersons';
+import { motion } from 'framer-motion'
+import { fadeInUp, stagger } from '../../utils/animations';
 export default function Sidebar({ profile }) 
 {
     const dispatch = useDispatch()
@@ -69,8 +71,8 @@ export default function Sidebar({ profile })
     }, [isUpdated])
     
     return (
-        <div className='user__bottom__sidebar'>
-            <div className="user__bottom__sidebar__introCard" style={{position:"relative"}}>
+        <motion.div variants={stagger} initial="initial" animate="animate"  className='user__bottom__sidebar'>
+            <motion.div variants={fadeInUp} className="user__bottom__sidebar__introCard" style={{position:"relative"}}>
                 <div className="user__bottom__sidebar__introCard__edit" onClick={() => setEdit(!edit)} style={{ position: "absolute", right: "0", paddingRight: "20px", cursor: "pointer" }}>
                     {profile?._id === userAuth?._id && <EditIcon /> }
                 </div>
@@ -109,8 +111,8 @@ export default function Sidebar({ profile })
                     </>
                     )}
                 </div>
-            </div>
-            <div className="user__bottom__sidebar__friendsCard">
+            </motion.div>
+            <motion.div variants={fadeInUp} className="user__bottom__sidebar__friendsCard">
                 <div className="user__bottom__sidebar__friendsCard__title">
                     followers
                 </div>
@@ -122,8 +124,8 @@ export default function Sidebar({ profile })
                     followers?.length >= 2 && <div className="user__bottom__sidebar__friendsCard__btn common_btn" onClick={() => setShowFriends({ status: true, data: followers,type:"followers" })}> see all </div>
                 }
                 
-            </div>
-            <div className="user__bottom__sidebar__friendsCard">
+            </motion.div>
+            <motion.div variants={fadeInUp} className="user__bottom__sidebar__friendsCard">
                 <div className="user__bottom__sidebar__friendsCard__title">
                     following
                 </div>
@@ -133,8 +135,8 @@ export default function Sidebar({ profile })
                 {
                     following?.length > 2 && <div className="user__bottom__sidebar__friendsCard__btn common_btn" onClick={() => setShowFriends({status:true,data: following,type:"following"})}>see all</div>
                 }
-            </div>
+            </motion.div>
             <FollowPersons data={showFriends?.data} title={showFriends.type === "following" ? `${profile?.name}'s following persons` : `${profile?.name}'s followers persons`} setShowFriends={setShowFriends} showFriends={showFriends} /> 
-        </div>
+        </motion.div>
     )
 }

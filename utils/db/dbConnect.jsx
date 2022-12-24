@@ -19,9 +19,9 @@ async function connect()
     }
     await mongoose.disconnect();
   }
-  // const db = await mongoose.connect('mongodb+srv://Ecommerce:m1964118@cluster0.7n14b.mongodb.net/mozSocialMedia'); // "mongodb://localhost:27017/mozSocialMedia" // 'mongodb+srv://Ecommerce:m1964118@cluster0.7n14b.mongodb.net/mozSocialMedia' // "mongodb://localhost:27017/mozSocialMedia"
   // mongoose.set("strictQuery", false);
   const db = await mongoose.connect('mongodb+srv://Ecommerce:m1964118@cluster0.7n14b.mongodb.net/mozSocialMedia'); // "mongodb://localhost:27017/mozSocialMedia" // 'mongodb+srv://Ecommerce:m1964118@cluster0.7n14b.mongodb.net/mozSocialMedia' // "mongodb://localhost:27017/mozSocialMedia"
+  // const db = await mongoose.connect("mongodb://localhost:27017/mozSocialMedia"); // "mongodb://localhost:27017/mozSocialMedia" // 'mongodb+srv://Ecommerce:m1964118@cluster0.7n14b.mongodb.net/mozSocialMedia' // "mongodb://localhost:27017/mozSocialMedia"
   
   console.log('new connection');
   connection.isConnected = db.connections[0].readyState;

@@ -9,7 +9,15 @@
     top: 0;
     z-index: 1000;
 
-    @media (min-width: 768px) {}
+    @media (max-width: 500px) {
+        &__middle{
+            &__link{
+                svg{
+                    font-size: 15px !important;
+                }
+            }
+        }
+    }
 
     .nav-container {
         display: grid;
@@ -97,7 +105,7 @@
         @media (max-width: 768px) {
             &__link {
                 svg {
-                    font-size: 20px !important;
+                        font-size: rem(18) !important;
                 }
             }
         }
@@ -112,6 +120,7 @@
 
             svg {
                 font-size: 30px;
+                margin-bottom: rem(5);
             }
 
             &.active {

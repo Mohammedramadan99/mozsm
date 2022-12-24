@@ -5,7 +5,8 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchUsersAction, followUserAction, unfollowUserAction, userProfileAction } from '../../store/usersSlice'
 import Person from './Person'
-
+import {motion} from 'framer-motion'
+import { fadeInUp, stagger } from '../../utils/animations'
 function Sidebar()
 {
     const dispatch = useDispatch()
@@ -80,13 +81,13 @@ function Sidebar()
                 <div className="mainPage__left__sidebar__G2__head">
                     people you may know
                 </div>
-                <div className="mainPage__left__sidebar__G2__persons">
+                <motion.div variants={stagger} initial="initial" animate="animate"  className="mainPage__left__sidebar__G2__persons">
                     {usersFiltered.length >= 1 ? usersFiltered?.map((user, inx) => (
                         <Person key={inx} user={user} />
                     )) : "there's no persons"}
                     {/* {followStatus()} */}
                     {usersCount > 4 && usersCount !== 5 && <div className="mainPage__left__sidebar__G2__persons__seeMore common_btn" onClick={() => router.push("/people")}> more </div>} 
-                </div>
+                </motion.div>
             </div>
         </div>
     )
