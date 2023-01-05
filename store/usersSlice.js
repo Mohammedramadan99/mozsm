@@ -1,5 +1,8 @@
+import { diff } from "jsondiffpatch";
 import { createAsyncThunk, createSlice, createAction } from "@reduxjs/toolkit";
 import axios from "axios";
+import { HYDRATE } from "next-redux-wrapper";
+import absoluteUrl from "next-absolute-url";
 
 const hostname =
   typeof window !== "undefined" && window.location.hostname
@@ -9,7 +12,8 @@ const origin =
   typeof window !== "undefined" && window.location.origin
     ? window.location.origin
     : "";
-
+    const productionLink = "https://mozsm.vercel.com"
+// const { origin } = absoluteUrl(req, req.headers.host);
 export const registerUserAction = createAsyncThunk(
   "users/register",
   async (user, { rejectWithValue, dispatch }) => {
@@ -19,9 +23,12 @@ export const registerUserAction = createAsyncThunk(
       },
     };
     //http call
-    console.log(user);
     try {
-      const { data } = await axios.post(`${origin}/api/auth/register`, user, config);
+      const { data } = await axios.post(
+        `${origin}/api/auth/register`,
+        user,
+        config
+      );
       return data;
     } catch (error) {
       if (!error.response) {
@@ -39,11 +46,9 @@ export const loginUserAction = createAsyncThunk(
     try {
       //make http call
       const { data } = await axios.post(`${origin}/api/auth/login`, userData);
-      console.log(data);
 
       //save user into local storage
-
-      localStorage.setItem("userInfo", JSON.stringify(data));
+      // localStorage.setItem("userInfo", JSON.stringify(data));
       return data;
     } catch (error) {
       if (!error?.response) {
@@ -66,16 +71,56 @@ export const userProfileAction = createAsyncThunk(
         Authorization: `Bearer ${userAuth?.token}`,
       },
     };
-    console.log("id from redux", id)
     //http call
-    try {
+    try
+    {
+      const dev = process.env.NODE_ENV !== "production";
+
+      const server = dev
+        ? "http://localhost:3000"
+        : productionLink;
+      let link = `${server}/api/users/profile/${id}`;
       const { data } = await axios.get(
-        `${origin}/api/users/profile/${id}`,
+        link, // `http://localhost:3000/api/users/profile/${id}`
         config
       );
 
       return data;
+    } catch (error) {
+      if (!error?.response) {
+        throw error;
+      }
+      return rejectWithValue(error?.response?.data);
+    }
+  }
+);
 
+export const LoggedInUserAction = createAsyncThunk(
+  "user/loggedIn",
+  async (email, { rejectWithValue, getState, dispatch }) => {
+    //get user token
+    const user = getState().users;
+    const { userAuth } = user;
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userAuth?.token}`,
+      },
+    };
+    //http call
+    try {
+      const dev = process.env.NODE_ENV !== "production";
+
+      const server = dev
+        ? "http://localhost:3000"
+        : productionLink;
+      let link = `${server}/api/users/profile`;
+      const { data } = await axios.post(
+        `${link}`,
+        {email},
+        config
+      );
+
+      return data;
     } catch (error) {
       if (!error?.response) {
         throw error;
@@ -88,7 +133,7 @@ export const userProfileAction = createAsyncThunk(
 // Follow
 export const followUserAction = createAsyncThunk(
   "user/follow",
-  async (userToFollowId, { rejectWithValue, getState, dispatch }) => {
+  async (follow, { rejectWithValue, getState, dispatch }) => {
     //get user token
     const user = process.browser && getState()?.users;
     const { userAuth } = user;
@@ -100,10 +145,11 @@ export const followUserAction = createAsyncThunk(
     //http call
     try {
       const { data } = await axios.put(
-        `${origin}/api/users/follow`,
-        { followId: userToFollowId },
+        `${origin}/api/users/follow?profile=true`,
+        { id: follow.id },
         config
       );
+      // follow?.profile && dispatch(userProfileAction(userAuth?._id))
       return data;
     } catch (error) {
       if (!error?.response) {
@@ -117,7 +163,7 @@ export const followUserAction = createAsyncThunk(
 // unFollow
 export const unfollowUserAction = createAsyncThunk(
   "user/unfollow",
-  async (unFollowId, { rejectWithValue, getState, dispatch }) => {
+  async (unFollow, { rejectWithValue, getState, dispatch }) => {
     //get user token
     const user = process.browser && getState()?.users;
     const { userAuth } = user;
@@ -129,10 +175,11 @@ export const unfollowUserAction = createAsyncThunk(
     //http call
     try {
       const { data } = await axios.put(
-        `${origin}/api/users/unfollow`,
-        { unFollowId },
+        `${origin}/api/users/unfollow?profile=true`,
+        {id:unFollow?.id},
         config
       );
+      // post?.profile && dispatch(userProfileAction(userAuth?._id))
       return data;
     } catch (error) {
       if (!error?.response) {
@@ -158,7 +205,9 @@ export const updateUserAction = createAsyncThunk(
     //http call
     try {
       const { data } = await axios.put(
-        `${origin}/api/users/profile/${userAuth._id}`,userData,config
+        `${origin}/api/users/profile/${userAuth._id}`,
+        userData,
+        config
       );
       return data;
     } catch (error) {
@@ -208,7 +257,6 @@ export const fetchUserDetailsAction = createAsyncThunk(
   "user/detail",
   async (id, { rejectWithValue, dispatch }) => {
     try {
-      console.log(id);
       const { data } = await axios.get(`${origin}/api/users/${id}`);
       return data;
     } catch (error) {
@@ -230,12 +278,19 @@ export const fetchUsersAction = createAsyncThunk(
         Authorization: `Bearer ${userAuth?.token}`,
       },
     };
-    try
-    {
+    try {
       let link = "";
-      num ? (link = `${origin}/api/users?limit=${num}`) : link = `${origin}/api/users`
-      const { data } = await axios.get(link, config);  
-    return data;
+      // num ? (link = `${origin}/api/users?limit=${num}`) : link = `${origin}/api/users`
+      const dev = process.env.NODE_ENV !== "production";
+
+      const server = dev
+        ? "http://localhost:3000"
+        : productionLink;
+      num
+        ? (link = `${server}/api/users?limit=${num}`)
+        : (link = `${server}/api/users`);
+      const { data } = await axios.get(link, config);
+      return data;
     } catch (error) {
       if (!error?.response) throw error;
       return rejectWithValue(error?.response?.data);
@@ -321,16 +376,13 @@ export const uploadCoverPhototAction = createAsyncThunk(
         Authorization: `Bearer ${userAuth?.token}`,
       },
     };
-    console.log(userAuth.id)
     try {
       //http call
-      console.log(coverImg);
       const { data } = await axios.put(
         `${origin}/api/users/profile/uploadcoverphoto`,
         coverImg,
         config
       );
-      console.log(data)
       return data;
     } catch (error) {
       if (!error?.response) throw error;
@@ -342,7 +394,6 @@ export const uploadCoverPhototAction = createAsyncThunk(
 export const uploadProfilePhototAction = createAsyncThunk(
   "user/profile-photo",
   async (userImg, { rejectWithValue, getState, dispatch }) => {
-    console.log(userImg);
     //get user token
     const user = process.browser && getState()?.users;
     const { userAuth } = user;
@@ -356,7 +407,6 @@ export const uploadProfilePhototAction = createAsyncThunk(
       // const formData = new FormData();
 
       // formData.append("image", userImg?.image);
-      console.log(userImg);
       const { data } = await axios.put(
         `${origin}/api/users/profile/profilephoto`,
         userImg,
@@ -427,7 +477,10 @@ export const passwordResetAction = createAsyncThunk(
 const usersSlices = createSlice({
   name: "users",
   initialState: {
-    userAuth: process.browser && JSON.parse(localStorage.getItem("userInfo")),
+    userAuth:
+      process.browser && JSON.parse(localStorage.getItem("userInfo"))
+        ? JSON.parse(localStorage.getItem("userInfo"))
+        : {},
     usersList: [],
     appErr: null,
     serverErr: null,
@@ -438,14 +491,39 @@ const usersSlices = createSlice({
     reset: (state) => {
       state.appErr = null;
       state.serverErr = null;
+      state.isUpdated = false;
       state.coverPhoto = null;
       state.profilePhoto = null;
       state.registered = null;
-      state.profileImgUpdated = false
+      state.profileImgUpdated = false;
     },
   },
   extraReducers: (builder) => {
-    //register
+    // builder.addCase(HYDRATE, (state, action) => {
+    //   state = { ...state}
+    // });
+    // builder.addCase("persist/REHYDRATE", (state, action) => {
+    //   state.userAuth =
+    //     process.browser && JSON.parse(localStorage.getItem("userInfo"))
+    //       ? JSON.parse(localStorage.getItem("userInfo"))
+    //       : {};
+    // });
+    // builder.addCase(HYDRATE, (state, action) =>
+    // {
+    //   state.userAuth =
+    //     process.browser && JSON.parse(localStorage.getItem("userInfo"))
+    //       ? JSON.parse(localStorage.getItem("userInfo"))
+    //       : {};
+    // });
+    builder.addCase("persist/REHYDRATE", (state, action) => { // very impo -- without it  only the new state of users will exist
+      const data = action.payload;
+      if (data) {
+        return {
+          ...state,
+          ...data.users,
+        };
+      }
+    });
     builder.addCase(registerUserAction.pending, (state, action) => {
       state.loading = true;
       state.appErr = null;
@@ -502,19 +580,18 @@ const usersSlices = createSlice({
 
     //user details
     builder.addCase(fetchUserDetailsAction.pending, (state, action) => {
-      state.loading = true;
+      state.loadingProfile = true;
       state.appErr = null;
       state.serverErr = null;
     });
     builder.addCase(fetchUserDetailsAction.fulfilled, (state, action) => {
-      state.loading = false;
+      state.loadingProfile = false;
       state.userDetails = action?.payload;
       state.appErr = null;
       state.serverErr = null;
     });
     builder.addCase(fetchUserDetailsAction.rejected, (state, action) => {
-      console.log(action.payload);
-      state.loading = false;
+      state.loadingProfile = false;
       state.appErr = action?.payload;
       state.serverErr = action?.error?.message;
     });
@@ -532,7 +609,6 @@ const usersSlices = createSlice({
       state.serverErr = null;
     });
     builder.addCase(blockUserAction.rejected, (state, action) => {
-      console.log(action.payload);
       state.loading = false;
       state.appErr = action?.payload;
       state.serverErr = action?.error?.message;
@@ -550,7 +626,6 @@ const usersSlices = createSlice({
       state.serverErr = null;
     });
     builder.addCase(unBlockUserAction.rejected, (state, action) => {
-      console.log(action.payload);
       state.loading = false;
       state.appErr = action?.payload;
       state.serverErr = action?.error?.message;
@@ -558,22 +633,19 @@ const usersSlices = createSlice({
     //All Users
     builder.addCase(fetchUsersAction.pending, (state, action) => {
       state.loading = true;
-      state.usersList = [];
       state.appErr = null;
       state.serverErr = null;
     });
     builder.addCase(fetchUsersAction.fulfilled, (state, action) => {
       state.loading = false;
-      state.usersList = action?.payload.users;
+      state.usersList = action?.payload?.users;
       state.usersCount = action?.payload.usersCount;
       state.appErr = null;
       state.serverErr = null;
     });
     builder.addCase(fetchUsersAction.rejected, (state, action) => {
-      console.log(action.payload);
-      state.usersList = [];
       state.loading = false;
-      state.appErr = action?.payload;
+      state.appErr = null;
       state.serverErr = action?.error?.message;
     });
 
@@ -584,6 +656,7 @@ const usersSlices = createSlice({
       state.serverErr = null;
     });
     builder.addCase(followUserAction.fulfilled, (state, action) => {
+      state.profile = action.payload.profile;
       state.loading = false;
       state.followed = action?.payload;
       state.unFollowed = null;
@@ -604,6 +677,7 @@ const usersSlices = createSlice({
       state.unfollowServerErr = null;
     });
     builder.addCase(unfollowUserAction.fulfilled, (state, action) => {
+      state.profile = action.payload.profile;
       state.unfollowLoading = false;
       state.unFollowed = action?.payload;
       state.followed = null;
@@ -622,34 +696,36 @@ const usersSlices = createSlice({
       state.serverErr = null;
     });
     builder.addCase(loginUserAction.fulfilled, (state, action) => {
-      state.userAuth = action?.payload;
+      state.userAuth = action?.payload?.user;
       state.loading = false;
       state.appErr = null;
       state.serverErr = null;
-      state.loggedOut = false;
     });
     builder.addCase(loginUserAction.rejected, (state, action) => {
       state.appErr = action?.payload;
       state.serverErr = action?.error?.message;
       state.loading = false;
     });
-
     //Profile
-    builder.addCase(userProfileAction.pending, (state, action) => {
-      state.loading = true;
+    builder.addCase(userProfileAction.pending, (state, action) =>
+    {
+      state.loadingProfile = true;
       state.profileAppErr = null;
       state.profileServerErr = null;
     });
-    builder.addCase(userProfileAction.fulfilled, (state, action) => {
+    builder.addCase(userProfileAction.fulfilled, (state, action) =>
+    {
+      
       state.profile = action?.payload;
-      state.loading = false;
+      state.loadingProfile = false;
       state.profileAppErr = null;
       state.profileServerErr = null;
     });
-    builder.addCase(userProfileAction.rejected, (state, action) => {
-      state.profileAppErr = action?.payload?.message;
-      state.profileServerErr = action?.error?.message;
-      state.loading = false;
+    builder.addCase(userProfileAction.rejected, (state, action) =>
+    {
+      state.profileAppErr = null;
+      state.profileServerErr = null;
+      state.loadingProfile = false;
     });
 
     //update
@@ -660,13 +736,12 @@ const usersSlices = createSlice({
     });
     builder.addCase(updateUserAction.fulfilled, (state, action) => {
       state.loading = false;
-      state.userUpdated = action?.payload;
+      state.profile = action?.payload.user;
       state.isUpdated = true;
       state.appErr = null;
       state.serverErr = null;
     });
     builder.addCase(updateUserAction.rejected, (state, action) => {
-      console.log(action.payload);
       state.loading = false;
       state.appErr = action?.payload;
       state.serverErr = action?.error?.message;
@@ -685,7 +760,6 @@ const usersSlices = createSlice({
       state.serverErr = null;
     });
     builder.addCase(updatePasswordAction.rejected, (state, action) => {
-      console.log(action.payload);
       state.loading = false;
       state.appErr = action?.payload;
       state.serverErr = action?.error?.message;
@@ -698,7 +772,7 @@ const usersSlices = createSlice({
       state.serverErr = null;
     });
     builder.addCase(uploadCoverPhototAction.fulfilled, (state, action) => {
-      state.coverPhoto = action?.payload;
+      state.profile = action?.payload;
       state.profileImgUpdated = true;
       state.loading = false;
       state.appErr = null;
@@ -741,6 +815,24 @@ const usersSlices = createSlice({
     builder.addCase(logoutAction.rejected, (state, action) => {
       state.appErr = action?.payload;
       state.serverErr = action?.error?.message;
+      state.loading = false;
+    });
+    //logout
+    builder.addCase(LoggedInUserAction.pending, (state, action) =>
+    {
+      state.loading = false;
+    });
+    builder.addCase(LoggedInUserAction.fulfilled, (state, action) =>
+    {
+      state.userAuth = action?.payload.user;
+      state.loading = false;
+      state.appErr = null;
+      state.serverErr = null;
+    });
+    builder.addCase(LoggedInUserAction.rejected, (state, action) =>
+    {
+      // state.appErr = action?.payload;
+      // state.serverErr = null;
       state.loading = false;
     });
   },

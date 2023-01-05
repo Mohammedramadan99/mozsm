@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice, createAction } from "@reduxjs/toolkit";
 import axios from "axios";
+import { userProfileAction } from "./usersSlice";
 //Create Post action
 
 //action to redirect
@@ -48,7 +49,6 @@ export const createpostAction = createAsyncThunk(
 export const updatePostAction = createAsyncThunk(
   "post/updated",
   async (post, { rejectWithValue, getState, dispatch }) => {
-    console.log(post);
     //get user token
     const user = process.browser &&  getState()?.users;
     const { userAuth } = user;
@@ -99,8 +99,16 @@ export const deletePostAction = createAsyncThunk(
 export const fetchPostsAction = createAsyncThunk(
   "post/list",
   async (_, { rejectWithValue, getState, dispatch }) => {
-    try {
-      const { data } = await axios.get(`/api/posts`);
+    try
+    {
+      const dev = process.env.NODE_ENV !== "production";
+
+      const server = dev
+        ? "http://localhost:3000"
+        : productionLink;
+      const { data } = await axios.get(
+        `${server}/api/posts`
+      );
       return data;
     } catch (error) {
       if (!error?.response) throw error;
@@ -125,7 +133,7 @@ export const fetchPostDetailsAction = createAsyncThunk(
 //Add Likes to post
 export const toggleAddLikesToPost = createAsyncThunk(
   "post/like",
-  async (postId, { rejectWithValue, getState, dispatch }) => {
+  async (post, { rejectWithValue, getState, dispatch }) => {
     //get user token
     const user = process.browser &&  getState()?.users;
     const { userAuth } = user;
@@ -137,9 +145,10 @@ export const toggleAddLikesToPost = createAsyncThunk(
     try {
       const { data } = await axios.put(
         `/api/posts/likes`,
-        { postId },
+        { id:post.id },
         config
       );
+      post?.profile && dispatch(userProfileAction(post?.user))
       return data;
     } catch (error) {
       if (!error?.response) throw error;
@@ -151,7 +160,7 @@ export const toggleAddLikesToPost = createAsyncThunk(
 //Add DisLikes to post
 export const toggleAddDisLikesToPost = createAsyncThunk(
   "post/dislike",
-  async (postId, { rejectWithValue, getState, dispatch }) => {
+  async (post, { rejectWithValue, getState, dispatch }) => {
     //get user token
     const user = process.browser &&  getState()?.users;
     const { userAuth } = user;
@@ -163,10 +172,10 @@ export const toggleAddDisLikesToPost = createAsyncThunk(
     try {
       const { data } = await axios.put(
         `/api/posts/dislikes`,
-        { postId },
+        { id:post.id },
         config
       );
-
+      post?.profile && dispatch(userProfileAction(post?.user))
       return data;
     } catch (error) {
       if (!error?.response) throw error;
@@ -175,11 +184,162 @@ export const toggleAddDisLikesToPost = createAsyncThunk(
   }
 );
 
+// comments 
+
+export const createCommentAction = createAsyncThunk(
+  "post/comment/create",
+  async (comment, { rejectWithValue, getState, dispatch }) => {
+    //get user token
+    const user = process.browser &&  getState()?.users;
+    const { userAuth } = user;
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userAuth?.token}`,
+      },
+    };
+    //http call
+    try {
+      const { data } = await axios.post(
+        `${origin}/api/comments`,
+        {
+          description: comment?.commentData?.description,
+          postId: comment?.commentData?.postId,
+        },
+        config
+      );
+      comment?.profile && dispatch(userProfileAction(comment.user))
+
+      return data;
+    } catch (error) {
+      if (!error?.response) {
+        throw error;
+      }
+      return rejectWithValue(error?.response?.data);
+    }
+  }
+);
+
+//delete
+export const getCommentsAction = createAsyncThunk(
+  "post/comment/all",
+  async (postId, { rejectWithValue, getState, dispatch }) => {
+    //get user token
+    const user = process.browser &&  getState()?.users;
+    const { userAuth } = user;
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userAuth?.token}`,
+      },
+    };
+    //http call
+    try
+    {
+      
+      // let link = postId
+      //   ? `${origin}/api/comments?post=${postId}`
+      //   : `${origin}/api/comments`
+
+      const dev = process.env.NODE_ENV !== "production";
+
+      const server = dev
+        ? "http://localhost:3000"
+        : productionLink;
+      let link = `${server}/api/comments`;
+      const { data } = await axios.get(link, config);
+      return data;
+    } catch (error) {
+      if (!error?.response) {
+        throw error;
+      }
+      return rejectWithValue(error?.response?.data);
+    }
+  }
+);
+//delete
+export const deleteCommentAction = createAsyncThunk(
+  "post/comment/delete",
+  async (commentId, { rejectWithValue, getState, dispatch }) => {
+    //get user token
+    const user = process.browser &&  getState()?.users;
+    const { userAuth } = user;
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userAuth?.token}`,
+      },
+    };
+    //http call
+    try {
+      const { data } = await axios.delete(`${origin}/api/comments/${commentId}`, config);
+      return data;
+    } catch (error) {
+      if (!error?.response) {
+        throw error;
+      }
+      return rejectWithValue(error?.response?.data);
+    }
+  }
+);
+
+//Update
+export const updateCommentAction = createAsyncThunk(
+  "post/comment/update",
+  async (comment, { rejectWithValue, getState, dispatch }) => {
+    //get user token
+    const user = process.browser &&  getState()?.users;
+    const { userAuth } = user;
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userAuth?.token}`,
+      },
+    };
+    //http call
+    try {
+      const { data } = await axios.put(
+        `${origin}/api/comments/${comment?.id}`,
+        { description: comment?.description, postId: comment?.postId },
+        config
+      );
+      return data;
+    } catch (error) {
+      if (!error?.response) {
+        throw error;
+      }
+      return rejectWithValue(error?.response?.data);
+    }
+  }
+);
+
+//fetch comment details
+export const fetchCommentAction = createAsyncThunk(
+  "post/comment/fetch-details",
+  async (id, { rejectWithValue, getState, dispatch }) => {
+    //get user token
+    const user = process.browser &&  getState()?.users;
+    const { userAuth } = user;
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userAuth?.token}`,
+      },
+    };
+    //http call
+    try {
+      const { data } = await axios.get(`${origin}/api/comments/${id}`, config);
+      return data;
+    } catch (error) {
+      if (!error?.response) {
+        throw error;
+      }
+      return rejectWithValue(error?.response?.data);
+    }
+  }
+);
 //slice
 const postSlice = createSlice({
   name: "post",
   initialState: {
     postLists: [],
+    comments:[],
+    actionLoading:false,
     serverErr: null,
     isCreated: false,
     isUpdated: false,
@@ -195,16 +355,17 @@ const postSlice = createSlice({
   extraReducers: (builder) => {
     //create post
     builder.addCase(createpostAction.pending, (state, action) => {
-      state.loading = true;
+      state.createPostLoading = true;
     });
     builder.addCase(createpostAction.fulfilled, (state, action) => {
+      state.createPostLoading = false;
+      state.postLists = action.payload.posts;
       state.isCreated = true;
-      state.loading = false;
       state.appErr = null;
       state.serverErr = null;
     });
     builder.addCase(createpostAction.rejected, (state, action) => {
-      state.loading = false;
+      state.createPostLoading = false;
       state.appErr =
         action?.payload?.message || action?.payload?.error?.message;
       state.serverErr = action?.error?.message;
@@ -218,6 +379,7 @@ const postSlice = createSlice({
       state.isUpdated = true;
     });
     builder.addCase(updatePostAction.fulfilled, (state, action) => {
+      
       state.postUpdated = action?.payload;
       state.loading = false;
       state.appErr = null;
@@ -251,18 +413,21 @@ const postSlice = createSlice({
     });
 
     //fetch posts
-    builder.addCase(fetchPostsAction.pending, (state, action) => {
+    builder.addCase(fetchPostsAction.pending, (state, action) =>
+    {
       state.loading = true;
     });
-    builder.addCase(fetchPostsAction.fulfilled, (state, action) => {
+    builder.addCase(fetchPostsAction.fulfilled, (state, action) =>
+    {
       state.postLists = action?.payload;
       state.loading = false;
       state.appErr = null;
       state.serverErr = null;
     });
-    builder.addCase(fetchPostsAction.rejected, (state, action) => {
+    builder.addCase(fetchPostsAction.rejected, (state, action) =>
+    {
       state.loading = false;
-      state.appErr = action?.payload?.message;
+      state.appErr = null;
       state.serverErr = action?.error?.message;
     });
 
@@ -283,31 +448,119 @@ const postSlice = createSlice({
     });
     //Likes
     builder.addCase(toggleAddLikesToPost.pending, (state, action) => {
-      state.likeLoading = true;
+      state.actionLoading = true;
     });
     builder.addCase(toggleAddLikesToPost.fulfilled, (state, action) => {
-      state.likes = action?.payload;
-      state.likeLoading = false;
+      state.postLists = action?.payload?.posts
+      state.likes = action?.payload?.post;
+      state.actionLoading = false;
       state.appErr = null;
       state.serverErr = null;
     });
     builder.addCase(toggleAddLikesToPost.rejected, (state, action) => {
-      state.likeLoading = false;
+      state.actionLoading = false;
       state.appErr = action?.payload?.message;
       state.serverErr = action?.error?.message;
     });
     //DisLikes
     builder.addCase(toggleAddDisLikesToPost.pending, (state, action) => {
-      state.likeLoading = true;
+      state.actionLoading = true;
     });
     builder.addCase(toggleAddDisLikesToPost.fulfilled, (state, action) => {
-      state.dislikes = action?.payload;
-      state.likeLoading = false;
+      state.postLists = action?.payload?.posts;
+      state.dislikes = action?.payload?.post;
+      state.actionLoading = false;
       state.appErr = null;
       state.serverErr = null;
     });
     builder.addCase(toggleAddDisLikesToPost.rejected, (state, action) => {
-      state.likeLoading = false;
+      state.actionLoading = false;
+      state.appErr = action?.payload?.message;
+      state.serverErr = action?.error?.message;
+    });
+    // comments 
+    // create
+    builder.addCase(createCommentAction.pending, (state, action) => {
+      state.createCommentLoading = true;
+    });
+    builder.addCase(createCommentAction.fulfilled, (state, action) => {
+      state.createCommentLoading = false;
+      state.postLists = action?.payload?.posts;
+      state.comments = action.payload.comments;
+      state.commentCreated = action?.payload.comment;
+      state.appErr = null;
+      state.serverErr = null;
+    });
+    builder.addCase(createCommentAction.rejected, (state, action) => {
+      state.createCommentLoading = false;
+      state.commentCreated = null;
+      state.appErr = action?.payload?.message;
+      state.serverErr = action?.error?.message;
+    });
+
+    //delete
+    builder.addCase(deleteCommentAction.pending, (state, action) => {
+      state.loading = true;
+    });
+    builder.addCase(deleteCommentAction.fulfilled, (state, action) => {
+      state.loading = false;
+      state.commentDeleted = action?.payload;
+      state.appErr = null;
+      state.serverErr = null;
+    });
+    builder.addCase(deleteCommentAction.rejected, (state, action) => {
+      state.loading = false;
+      state.commentCreated = null;
+      state.appErr = action?.payload?.message;
+      state.serverErr = action?.error?.message;
+    });
+    //delete
+    builder.addCase(getCommentsAction.pending, (state, action) => {
+      state.loading = true;
+    });
+    builder.addCase(getCommentsAction.fulfilled, (state, action) => {
+      state.loading = false;
+      state.comments = action.payload
+      state.appErr = null;
+      state.serverErr = null;
+    });
+    builder.addCase(getCommentsAction.rejected, (state, action) => {
+      state.loading = false;
+      state.appErr = null;
+      state.serverErr = null;
+    });
+
+    //update
+    builder.addCase(updateCommentAction.pending, (state, action) => {
+      state.loading = true;
+    });
+    builder.addCase(updateCommentAction.fulfilled, (state, action) => {
+      state.loading = false;
+      state.commentUpdated = action?.payload;
+      state.isUpdate = false;
+      state.appErr = null;
+      state.serverErr = null;
+    });
+    builder.addCase(updateCommentAction.rejected, (state, action) => {
+      state.loading = false;
+      state.commentCreated = null;
+      state.appErr = action?.payload?.message;
+      state.serverErr = action?.error?.message;
+    });
+
+    //fetch details
+    builder.addCase(fetchCommentAction.pending, (state, action) => {
+      state.loading = true;
+    });
+    builder.addCase(fetchCommentAction.fulfilled, (state, action) => {
+      state.loading = false;
+      state.commentDetails = action?.payload;
+      state.appErr = null;
+      state.serverErr = null;
+    });
+    builder.addCase(fetchCommentAction.rejected, (state, action) => {
+      state.loading = false;
+      state.commentCreated = null;
       state.appErr = action?.payload?.message;
       state.serverErr = action?.error?.message;
     });

@@ -2,38 +2,53 @@ import React, { useEffect, useState } from 'react'
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
 import FavoriteIcon from '@mui/icons-material/Favorite';
-import { toggleAddLikesToPost, toggleAddDisLikesToPost, fetchPostsAction } from "../../store/postsSlice"
-import { createCommentAction, getCommentsAction } from '../../store/commentSlices'
+import { toggleAddLikesToPost, toggleAddDisLikesToPost, fetchPostsAction,  createCommentAction, getCommentsAction } from "../../store/postsSlice"
 import { useDispatch, useSelector } from 'react-redux'
-import Alert from '../Alert';
 import Image from 'next/image';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import Spinner from '../Spinner';
+import { fadeInUp } from '../../utils/animations';
+import { motion } from 'framer-motion';
+import { useRouter } from 'next/router';
+import Moment from 'moment'
+import Button from '../SmallComponents/Button';
+import moment from 'moment/moment'
+
 const Comment = dynamic(() => import('./Comment'))
 
 
 function Post({ direction, post, profile })
 {
     const dispatch = useDispatch()
+    const comment = useSelector(state => state?.posts);
+    const { actionLoading,comments, appErr, serverErr } = comment;
     const { userAuth } = useSelector(state => state.users)
-    const { comments } = useSelector(state => state.comments)
     const [postComments, setPostComments] = useState([])
     const { postLists, loading: postLoading, likeLoading } = useSelector(state => state.posts)
     const [commentContent, setCommentContent] = useState("")
-    const comment = useSelector(state => state?.comments);
-    const { loading : commentLoading, appErr, serverErr, commentCreated } = comment;
     const [showComments, setShowComments] = useState(false)
     const [showLiked, setShowLiked] = useState(false)
     const [showDisliked, setShowDisliked] = useState(false)
-
+    const [sortedComments,setSortedComments] = useState([])
+    const router = useRouter()
     const addLikeHandler = () =>
     {
-        dispatch(toggleAddLikesToPost(post?._id))
+        if(direction === "user__bottom__postsGroup") {
+            dispatch(toggleAddLikesToPost({id:post?._id,user:post?.user,profile:true}))
+        } else {
+            dispatch(toggleAddLikesToPost({id:post?._id,user:post?.user,profile:false}))
+        }
+        // router.push('/?like=true',undefined, {shallow:false})
     }
     const addDislikeHandler = () =>
     {
-        dispatch(toggleAddDisLikesToPost(post?._id))
+        if(direction === "user__bottom__postsGroup") {
+            dispatch(toggleAddDisLikesToPost({id:post?._id,user:post?.user,profile:true}))
+        } else {
+            dispatch(toggleAddDisLikesToPost({id:post?._id,user:post?.user,profile:false}))
+        }
+        // router.push('?dislike=true',undefined, {shallow:false})
     }
     const addCommentHandler = (p, e) =>
     {
@@ -43,22 +58,26 @@ function Post({ direction, post, profile })
             user: userAuth?._id,
             description: commentContent
         }
-        dispatch(createCommentAction(commentData))
+        if(direction === "user__bottom__postsGroup") {
+            dispatch(createCommentAction({commentData,user:post?.user,profile:true}))
+        } else {
+            dispatch(createCommentAction({commentData,user:post?.user,profile:false}))
+        }
+        // router.push('/?comment=true',undefined, {shallow:true})
         setCommentContent("")
     }
     useEffect(() =>
     {
         const liked = post?.likes.find(like => like === userAuth?._id)
         const disLiked = post?.disLikes.find(dislike => dislike === userAuth?._id)
-        console.log(liked)
-        console.log(post)
-        console.log(disLiked)
         if (liked)
         {
             setShowLiked(true)
+
         } else
         {
             setShowLiked(false)
+
         }
         if (disLiked)
         {
@@ -67,27 +86,50 @@ function Post({ direction, post, profile })
         {
             setShowDisliked(false)
         }
+        // dispatch(fetchPostsAction());
+
     }, [post?.likes, postLists, showLiked, showDisliked])
     useEffect(() =>
     {
         if (direction === "user__bottom__postsGroup")
         {
-            dispatch(getCommentsAction())
             setPostComments(comments?.filter(item => item.post === post._id))
         }
-    }, [dispatch, post,commentCreated])
+    }, [dispatch, post])
+    // useEffect(() => {
+    //     setSortedComments(post?.comments)
+    //     console.log("setSortedCommentsHere",sortedComments)
+    // }, [post])
+    useEffect(() => {
+
+        // const arr  = [post.comments].sort((a, b) =>{a.createdAt.localeCompare(b.createdAt)})
+        // setSortedComments(prev =>
+        //     [...prev].sort((a, b) => a.createdAt.localeCompare(b.createdAt))
+        // )
+        console.log("commentsAfter",comments)
+        console.log("postAfter",post)
+        setSortedComments(comments?.filter(comment => comment.post === post._id))
+        console.log("setSortedCommentsAfter",sortedComments)
+        // setSortedComments(arr.sort((a, b) =>  a.createdAt.localeCompare(b.createdAt)))
+        // const post.comments.sort((a,b) => new Moment(a.createdAt).format('YYYYMMDD') - new Moment(b.createdAt).format('YYYYMMDD'))
+        // console.log({setSortedComments})
+    }, [comments])
     
     return (
-        <>
+        <motion.div variants={fadeInUp}>
             <div className={`${direction}__posts__container__post`}>
                 <Link href={post ? `/user/${post?.user?._id}` : profile && `/user/${profile._id}`} className={`${direction}__posts__container__post__userInfo`}>
                     <>
                         <div className={`${direction}__posts__container__post__userInfo__img img__rounded`}>
-                            {profile && profile?.profilePhoto ? <Image src={profile?.profilePhoto} width={150} height={150} alt="you" /> : post?.user?.profilePhoto  && <Image src={post?.user?.profilePhoto} alt="you" width={150} height={150} objectFit='cover' />}
+                            {post?.user && post?.user?.image ? <Image src={post?.user?.image} fill={true} alt="you" /> : profile && profile?.image  && <Image src={post?.user?.image} alt="you" fill={true} style={{objectFit:'cover'}} />}
                         </div>
-                        <div className={`${direction}__posts__container__post__userInfo__name`}>
-                            {post?.user?.name}
-                            {profile?.name}
+                        <div className={`${direction}__posts__container__post__userInfo__left`}>
+                            <div className={`${direction}__posts__container__post__userInfo__left__name`}>
+                                {direction === "user__bottom__postsGroup" ? profile.name : post?.user?.name}
+                            </div>
+                            <div className={`${direction}__posts__container__post__userInfo__left__time`}>
+                                {moment(post?.createdAt).fromNow()}
+                            </div>
                         </div>
                     </>
                 </Link>
@@ -96,37 +138,31 @@ function Post({ direction, post, profile })
                 </div>
                 <div className={`${direction}__posts__container__post__img`}>
                     <div className='img--parent'>
-                        {post && post?.image && <Image src={post?.image} layout="fill" objectFit='contain' alt="post img" />}
+                        {post && post?.image && <Image src={post?.image} fill={true} style={{objectFit:'contain'}} alt="post img" />}
                     </div>
                 </div>
                 <div className={`${direction}__posts__container__post__numbers`}>
                     <div className={`${direction}__posts__container__post__numbers__likesNums"`}>
                         <div className={`${direction}__posts__container__post__numbers__commentsNums`}>
-                            {likeLoading ? (
-                                <div style={{}}>
-                                    <Spinner />
-                                </div>
-                            ): (
-                                    <>
-                                        <span> {post?.likes?.length} <strong> like </strong> </span>
-                                        <span> {post?.disLikes?.length} <strong> dislike </strong> </span>
-                                        <span> {
-                                            direction === "user__bottom__postsGroup" ? postComments?.length : post?.comments?.length
-                                        } <strong> comments </strong> </span>
-                                    </>
-                                )}
+                            <>
+                                <span> {post?.likes?.length} <strong> like </strong> </span>
+                                <span> {post?.disLikes?.length} <strong> dislike </strong> </span>
+                                <span> {
+                                    direction === "user__bottom__postsGroup" ? postComments?.length : post?.comments?.length
+                                } <strong> comments </strong> </span>
+                            </>
                         </div>
                     </div>
                 </div>
                 <div className={`${direction}__posts__container__post__actions`}>
                     <div className={showLiked ? `${direction}__posts__container__post__actions__item active` : `${direction}__posts__container__post__actions__item`} onClick={() => addLikeHandler()}>
-                        <FavoriteIcon style={showLiked ? { opacity: "1" } : { opacity: ".1" }} /> like
+                        <FavoriteIcon style={showLiked ? { opacity: "1" } : { opacity: ".1" }} /> <Button word="like" /> 
                     </div>
                     <div className={showDisliked ? `${direction}__posts__container__post__actions__item active` : `${direction}__posts__container__post__actions__item`} onClick={() => addDislikeHandler()}>
-                        <ThumbDownOffAltIcon style={showDisliked ? { opacity: "1" } : { opacity: ".1" }} /> dislike
+                        <ThumbDownOffAltIcon style={showDisliked ? { opacity: "1" } : { opacity: ".1" }} /> <Button word="dislike" />
                     </div>
                     <div className={showComments ? `${direction}__posts__container__post__actions__item active` : `${direction}__posts__container__post__actions__item`} onClick={() => setShowComments(!showComments)}>
-                        <ChatBubbleOutlineIcon /> comment
+                        <ChatBubbleOutlineIcon /> <Button word="comment" />
                     </div>
                 </div>
             </div>
@@ -134,24 +170,25 @@ function Post({ direction, post, profile })
                 <div className={`${direction}__posts__container__commentsGroupe__writeComment`}>
                     <div className={`${direction}__posts__container__commentsGroupe__writeComment__userImg img__rounded`}>
                         <div className="img--container">
-                            {userAuth?.profilePhoto && <Image src={userAuth?.profilePhoto} alt="img" layout='fill' /> }
+                            {userAuth?.image && <Image src={userAuth?.image} alt="img" fill={true} /> }
                         </div>
                     </div>
                     <form className={`${direction}__posts__container__commentsGroupe__writeComment__input`} onSubmit={(e) => addCommentHandler(post, e)}>
                         <input type="text" value={commentContent} placeholder='write a comment' onChange={e => setCommentContent(e.target.value)} />
-                        {commentLoading ? (
-                            <div style={{ position: "relative" }}>
-                                <Spinner />
-                            </div>
-                        ) : <input type="submit" />}
+                            {actionLoading ? (
+                                <div style={{ position: "relative" }}>
+                                    <Spinner />
+                                </div>
+                                ) : <input type="submit" />
+                            }
                         
                     </form>
                 </div>
                 <div className={`${direction}__posts__container__commentsGroupe__comments`}>
-                    {direction === "user__bottom__postsGroup" ? postComments?.map((comment, inx) => <Comment key={inx} comment={comment} />) : post?.comments?.map((comment, inx) => <Comment key={inx} comment={comment} />)}
+                    {direction === "user__bottom__postsGroup" ? postComments?.map((comment, inx) => <Comment key={inx} comment={comment} />) : sortedComments?.map((comment, inx) => <Comment key={inx} comment={comment} />)}
                 </div>
             </div>
-        </>
+        </motion.div>
     )
 }
 

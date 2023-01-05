@@ -15,7 +15,7 @@ export default function Person({ user })
             <Link href={`/user/${user?._id}`} className="mainPage__left__sidebar__G2__persons__person__info" style={{ color: "#000" }}>
                 <div className="mainPage__left__sidebar__G2__persons__person__info__img img__rounded">
                     <div className="img--container">
-                        {user?.profilePhoto  && <Image src={user?.profilePhoto} layout="fill" alt="person" />}
+                        {user?.image  && <Image src={user?.image} fill={true} alt="person" />}
                     </div>
                 </div>
                 <div className="mainPage__left__sidebar__G2__persons__person__info__name">{user?.name}</div>

@@ -19,10 +19,11 @@ handler.use(isAuth).put(async (req, res) =>
     {
         console.log("we're in #1")
         //1.Find the post to be liked
-        const { postId } = req?.body;
-        const post = await Post.findById(postId);
+        const { id } = req?.body;
+        const post = await Post.findById(id);
         //2. Find the login user
         const loginUserId = req?.user?._id;
+        console.log("loginUserId",loginUserId)
         //3. Find is this user has liked this post?
         const isLiked = post?.isLiked;
         //4.Chech if this user has dislikes this post
@@ -33,7 +34,7 @@ handler.use(isAuth).put(async (req, res) =>
         if (alreadyDisliked)
         {
             const post = await Post.findByIdAndUpdate(
-                postId,
+                id,
                 {
                     $pull: { disLikes: loginUserId },
                     isDisLiked: false,
@@ -44,17 +45,13 @@ handler.use(isAuth).put(async (req, res) =>
                     runValidators: true,
                 }
             );
-            res.status(200).json({
-                success: true,
-                post
-            });
         }
         //Toggle
         //Remove the user if he has liked the post
         if (isLiked)
         {
             const post = await Post.findByIdAndUpdate(
-                postId,
+                id,
                 {
                     $pull: { likes: loginUserId },
                     isLiked: false,
@@ -65,15 +62,20 @@ handler.use(isAuth).put(async (req, res) =>
                     runValidators: true,
                 }
             );
+            const posts = await Post.find().populate({
+                path: 'user',
+                model: 'User',
+            }).populate('comments').sort('-createdAt')
             res.status(200).json({
                 success: true,
-                post
+                post,
+                posts
             });
         } else
         {
             //add to likes
             const post = await Post.findByIdAndUpdate(
-                postId,
+                id,
                 {
                     $push: { likes: loginUserId },
                     isLiked: true,
@@ -83,9 +85,14 @@ handler.use(isAuth).put(async (req, res) =>
                     runValidators: true,
                 }
             );
+            const posts = await Post.find().populate({
+                path: 'user',
+                model: 'User',
+            }).populate('comments').sort('-createdAt')
             res.status(200).json({
                 success: true,
-                post
+                post,
+                posts
             });
         }
     } catch (error) {

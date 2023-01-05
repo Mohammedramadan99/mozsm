@@ -7,7 +7,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: [true, "name is required"],
     },
-    profilePhoto: {
+    image: {
       type: String,
       default:
         "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png",
@@ -20,6 +20,13 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: [true, "Email is required"],
     },
+    password: {
+      type: String,
+      // required: [true, "Password is required"],
+    },
+    accountType: {
+      type:String,
+    },
     bio: {
       type: String,
     },
@@ -28,10 +35,6 @@ const userSchema = new mongoose.Schema(
     },
     relationShip: {
       type: String,
-    },
-    password: {
-      type: String,
-      required: [true, "Password is required"],
     },
     role: {
       type: String,
@@ -81,11 +84,11 @@ userSchema.virtual("posts", {
   localField: "_id",
 });
 
-userSchema.virtual("notifications", {
-  ref: "Notification",
-  foreignField: "user",
-  localField: "_id",
-});
+// userSchema.virtual("notifications", {
+//   ref: "Notification",
+//   foreignField: "user",
+//   localField: "_id",
+// });
 
 //Hash password
 userSchema.pre("save", async function (next) {

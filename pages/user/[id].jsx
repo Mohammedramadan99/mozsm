@@ -1,11 +1,13 @@
-import { useRouter } from "next/router"
-import { useEffect } from "react"
-import { useDispatch, useSelector } from "react-redux"
+
 import dynamic from 'next/dynamic'
-import UserDetails from "../../components/UserDetails/UserDetails"
+// import UserDetails from "../../components/UserDetails/UserDetails"
 import { routerAnimation } from '../../utils/animations'
 import { motion } from "framer-motion";
-// const UserDetails = dynamic(() => import('../../components/UserDetails/UserDetails'))
+import { wrapper } from "../../store/store"
+import { fetchUserDetailsAction, fetchUsersAction, LoggedInUserAction, userProfileAction } from "../../store/usersSlice"
+import {getCommentsAction} from '../../store/postsSlice'
+import { getSession } from 'next-auth/react';
+const UserDetails = dynamic(() => import('../../components/UserDetails/UserDetails'))
 function userDetails()
 {
   return <motion.div variants={routerAnimation}
@@ -16,11 +18,24 @@ function userDetails()
   </motion.div>
 }
 
+export const getServerSideProps = wrapper.getServerSideProps(
+    store => async (context) =>
+  {
+    const session = await getSession(context)
+    const { params } = context
+    const { id } = params
+    await store.dispatch(userProfileAction(id))
+    await store.dispatch(fetchUsersAction());
+    await store.dispatch(getCommentsAction())
+    await store.dispatch(LoggedInUserAction(session?.user?.email));
+  }
+)
+
 export default userDetails
 
 // export const getServerSideProps = wrapper.getServerSideProps( store =>  ({ req, res,params}) =>
 // {
 
-//   const data = { req, id:params.id }
-//   store.dispatch(userProfileAction(data))
+//   // const data = {id:params.id }
+//   // store.dispatch(userProfileAction(data))
 // });

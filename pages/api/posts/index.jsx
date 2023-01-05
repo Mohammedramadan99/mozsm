@@ -33,7 +33,11 @@ handler.get(async (req, res) =>
 {
     await db.connect();
     try {
-        const posts = await Post.find().populate('comments').populate('user')
+        const posts = await Post.find().populate({
+            path: 'user',
+            model: 'User',
+        }).populate('comments').sort('-createdAt')
+        // const posts = await Post.find({}).populate('comments').populate('user')
         res.status(200).json(posts)
     } catch (err) {
         res.status(500).json(err.message)
@@ -50,7 +54,7 @@ handler.use(isAuth).post(async (req, res) =>
     await db.connect();
     try
     {
-        const { _id } = req.user;
+        // const { _id } = req.user;
         let images = [];
 
         if (typeof req.body.images === "string")
@@ -78,10 +82,15 @@ handler.use(isAuth).post(async (req, res) =>
         req.body.images = imagesLinks;
         const post = await Post.create({
             ...req.body,
-            user: _id,
+            user: req.user,
             image: imagesLinks[0]?.url
         });
-        res.json(post);
+        const posts = await Post.find().populate('comments').populate('user')
+        res.status(200).json({
+            success:true,
+            posts,
+            post
+        });
     } catch (error)
     {
         res.json(error.message);

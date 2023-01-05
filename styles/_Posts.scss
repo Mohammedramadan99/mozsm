@@ -26,10 +26,18 @@
                     &__img {
                         margin-right: 15px;
                     }
-
-                    &__name {
-                        text-transform: capitalize;
-                        font-weight: 700;
+                    &__left{
+                        &__name {
+                            color: $main_color;
+                            text-transform: capitalize;
+                            font-weight: 600;
+                            font-size: rem(15);
+                        }
+                        &__time{
+                            margin-top: rem(5);
+                            font-size: rem(12);
+                            color: #999;
+                        }
                     }
                 }
 
@@ -73,7 +81,6 @@
                         margin: 0 10px;
                         font-weight: 600;
                         @include flex($justify: space-between);
-
                         &.active,
                         &:hover {
                             background-color: #eee;
@@ -81,6 +88,10 @@
 
                         &.active {
                             color: $main_color;
+                            svg{
+                                transform: scale(1);
+                                animation: reactions .5s linear;
+                            }
                         }
                     }
                 }
@@ -148,27 +159,58 @@
 
                     &__comment {
                         display: flex;
-                        margin-bottom: 10px;
-
+                        margin-bottom: 20px;
+                        column-gap: rem(15);
                         &__img {
                             width: 70px;
                             margin-left: 20px;
                         }
-
+                        
                         &__details {
+                            border: 1px solid #ede9e9;
                             width: calc(100% - 100px);
                             margin-left: 10px;
-                            background-color: #eee;
+                            // background-color: #000;
                             padding: 10px;
-
-                            &__name {
-                                text-transform: capitalize;
-                                font-weight: 700;
+                            position: relative;
+                            &::before{
+                                content: '';
+                                border-bottom: 10px solid transparent;
+                                border-right: 11px solid #ede9e9;
+                                border-top: 10px solid transparent;
+                                left: -11px;
+                                top: 10px;
+                                position: absolute;
+                            }
+                            &::after{
+                                content: '';
+                                border-bottom: 8px solid transparent;
+                                border-right: 9px solid #fff;
+                                border-top: 8px solid transparent;
+                                left: -9px;
+                                top: 12px;
+                                position: absolute;
+                            }
+                            &__top{
+                                @include flex($justify:flex-start,$gap:20);
+                                &__name {
+                                    text-transform: capitalize;
+                                    font-weight: 600;
+                                    font-size: rem(13);
+                                    padding-bottom: rem(10);
+                                }
+                                &__time{
+                                    color: #999;
+                                    font-weight: 400;
+                                    font-size: rem(12);
+                                    padding-bottom: rem(10);
+                                }
                             }
 
                             &__commentContent {
-                                font-size: 15px;
+                                font-size: 13px;
                                 text-transform: lowercase;
+                                color: #999;
                             }
                         }
                     }
@@ -176,5 +218,20 @@
             }
 
         }
+    }
+}
+
+@keyframes reactions {
+    0%{
+        transform: scale(0);
+    }
+    40%{
+        transform: scale(1.5);
+    }
+    80%{
+        transform: scale(.5);
+    }
+    100%{
+        transform: scale(1);
     }
 }

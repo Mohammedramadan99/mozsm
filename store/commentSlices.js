@@ -8,7 +8,7 @@ const hostname =
 const origin =
   typeof window !== "undefined" && window.location.origin
     ? window.location.origin
-    : "";
+    : ""; 
 //action to redirect
 const resetCommentAction = createAction("comment/reset");
 //create
@@ -162,7 +162,8 @@ const commentSlices = createSlice({
     });
     builder.addCase(createCommentAction.fulfilled, (state, action) => {
       state.loading = false;
-      state.commentCreated = action?.payload;
+      state.comments = action?.payload?.comments;
+      state.commentCreated = action?.payload.comment;
       state.appErr = null;
       state.serverErr = null;
     });

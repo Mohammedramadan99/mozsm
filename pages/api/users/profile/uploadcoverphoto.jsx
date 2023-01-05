@@ -24,15 +24,16 @@ handler.use(isAuth).put(async (req, res) =>
 {
     await db.connect();
     const { _id } = req.user;
+    console.log("coverHere", req.body)
     try
     {
-        const result = await cloudinary.v2.uploader.upload(req?.body?.image, {
+        const result = await cloudinary.v2.uploader.upload(req?.body?.uploadImage, {
             folder: "blog",
         });
         const url = result?.secure_url
 
         const foundUser = await User.findByIdAndUpdate(
-            id,
+            _id,
             {
                 coverPhoto: url,
             },

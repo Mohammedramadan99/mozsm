@@ -34,12 +34,13 @@ export default function Layout({ title, children })
     return (
         <>
             <Head>
+                <title>Moz SM</title>
                 <meta name="viewport" content="width=device-width, initial-scale=1" />
             </Head>
 
             <div className="flex min-h-screen flex-col justify-between ">
                     <header>
-                        <MainAlert/>
+                        {/* <MainAlert/> */}
                         <Navbar />
                     </header>
                     <main>{children}</main>

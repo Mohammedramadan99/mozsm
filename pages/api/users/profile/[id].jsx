@@ -35,13 +35,13 @@ handler.put(async (req, res) =>
     await db.connect();
     try
     {
-        let user = await User.findById(req.query.id);
+        let user = await User.findById(req.query.id).populate('posts');
 
         user = await User.findByIdAndUpdate(req.query.id, req.body, {
             new: true,
             runValidators: true,
             useFindAndModify: false,
-        });
+        }).populate('posts');
 
         res.status(200).json({
             success: true,

@@ -7,12 +7,14 @@ import UserDetails from '../UserDetails/UserDetails';
 import Image from 'next/image';
 import { motion } from "framer-motion"
 import {fadeInLeft} from '../../utils/animations'
+import { useSession } from 'next-auth/react';
 function WritePost({ dir, userDetails })
 {
     const dispatch = useDispatch()
-
+    const { data: session } = useSession()
     const { userAuth, usersList } = useSelector(state => state.users)
-    const currUser = usersList?.find(u => u._id === userAuth?._id)
+    // const currUser = usersList?.find(u => u._id === userAuth?._id)
+    const currUser = session?.user
 
     const { isCreated, loading } = useSelector(state => state.posts)
     // const { categoryList } = useSelector(state => state?.category)
@@ -109,10 +111,10 @@ function WritePost({ dir, userDetails })
             <>
                 <div className={`${dir}__writePost__user`}>
                     <div className={`${dir}__writePost__user__img img__rounded`}>
-                        {currUser?.profilePhoto && <Image width={100} height={100} src={currUser?.profilePhoto} alt="you" />}
+                        {currUser?.image && <Image width={100} height={100} src={currUser?.image} alt="you" />}
                     </div>
                     <div className={`${dir}__writePost__user__name`}>
-                        {dir === "userDetails" ? `${userDetails?.name}` : `${userAuth?.name}`}
+                        {dir === "userDetails" ? `${currUser?.name}` : `${currUser?.name}`}
                     </div>
                 </div>
                 <div className={`${dir}__writePost__top`}>

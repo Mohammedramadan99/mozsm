@@ -1,10 +1,18 @@
+header{
+    position: sticky;
+    top: 0;
+    left: 0;
+    // height: 60px;
+    z-index: 2000;
+}
 .mainNav {
     width: 100%;
     // height: 60px;
     padding-left: 20px;
     padding-right: 20px;
     box-shadow: $light_shadow;
-    background-color: #fff;
+    background-color: rgba(#fff, .7);
+    backdrop-filter: blur(5px);
     position: sticky;
     top: 0;
     z-index: 1000;
@@ -111,21 +119,36 @@
         }
 
         &__link {
+            position: relative;
             width: 100%;
             height: 100%;
             @include flex();
             text-align: center;
             transition: $reg_transition;
-            border-bottom: 2px solid transparent;
-
+            // border-bottom: 2px solid transparent;
+            &::after{
+                content: "";
+                position: absolute;
+                width: 100%;
+                height: 0;
+                border-radius: 10%;
+                bottom: 0;
+                left: 0;
+                background-color: $main_color;
+                transition: $reg_transition;
+            }
             svg {
                 font-size: 30px;
                 margin-bottom: rem(5);
             }
 
             &.active {
-                border-color: $main_color;
-                color: $main_color;
+                svg{
+                    color: $main_color;
+                }
+                &::after{
+                    height: 3px;
+                }
             }
         }
 
@@ -152,10 +175,13 @@
 
             &__logoLitter {
                 @include flex();
-                text-transform: capitalize;
                 border: 1px solid;
-                width: 100%;
+                text-transform: capitalize;
+                width: 40px;
                 height: 100%;
+                border-radius: 50%;
+                background-color: $main_color;
+                color: #fff;
             }
 
         }

@@ -41,7 +41,7 @@ const postSchema = new mongoose.Schema(
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      required: [true, "Please Author is required"],
+      // required: [true, "Please Author is required"],
     },
     description: {
       type: String,
@@ -77,6 +77,11 @@ postSchema.virtual("comments", {
   foreignField: "post",
   localField: "_id",
 });
+// postSchema.virtual("user", {
+//   ref: "User",
+//   foreignField: "post",
+//   localField: "_id",
+// });
 
 const Post = mongoose.models.Post || mongoose.model("Post", postSchema);
 export default Post;

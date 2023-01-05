@@ -13,16 +13,20 @@ import Link from 'next/link'
 import { useSelector, useDispatch } from 'react-redux'
 import { useRef } from 'react'
 import { useRouter } from 'next/router'
-import { logoutAction } from '../../store/usersSlice'
+import { LoggedInUserAction, logoutAction } from '../../store/usersSlice'
 import Image from 'next/image'
 import { fetchNotificationsAction } from '../../store/notificationsSlice'
+import { useSession } from 'next-auth/react'
 function Navbar()
 {
+    const { data: session } = useSession()
     const dispatch = useDispatch()
     const router = useRouter()
     let dropdownref = useRef()
     const store = useSelector(state => state?.users)
-    const { userAuth, loggedOut,usersList } = store
+    const { userAuth,loggedOut, usersList } = store
+    const currUser = session?.user
+    
     const { allNotifications } = useSelector(state => state?.notifications)
     const [icons, setIcons] = useState([
         {
@@ -45,7 +49,7 @@ function Navbar()
     const [activePage, setActivePage] = useState('Home')
     const [opened, setOpened] = useState(false)
     const [notificationOpened, setNotificationOpened] = useState(false)
-    const currUser = usersList?.find(u => u?._id === userAuth?._id)
+    // const currUser = usersList?.find(u => u?._id === userAuth?._id)
     const logoutHandler = () =>
     {
         dispatch(logoutAction())
@@ -74,10 +78,15 @@ function Navbar()
             router.push('/login')
         }
     }, [loggedOut])
-    useEffect(() => {
-        dispatch(fetchNotificationsAction())
-    }, [])
-    console.log("currUser", currUser)
+    // useEffect(() => {
+        // dispatch(fetchNotificationsAction())
+    // }, [])
+    // useEffect(() =>
+    // {
+        // dispatch(fetchUsersAction(4))
+        // dispatch(LoggedInUserAction(session?.user?.email))
+    // }, [session?.user])
+    
     return (
         <div className="mainNav">
             <div className="nav-container" >
@@ -95,7 +104,7 @@ function Navbar()
                     {/* <div className="row"> */}
                         {icons?.map((item, i) => (
                             <Link href={`${item.link}`} key={i} title={item.title}
-                                className={router.asPath === item.link ? 'col mainNav__middle__link active' : 'col mainNav__middle__link'}
+                                className={router.asPath == item.link ? 'col mainNav__middle__link active' : 'col mainNav__middle__link'}
                                 onClick={() => setActivePage(item.title)}  >
                                 {item.icon}
                             </Link>
@@ -104,15 +113,15 @@ function Navbar()
                     {/* </div> */}
                 </div>
                 <div className=" mainNav__right" ref={dropdownref}>
-                    <Link href={`/user/${currUser?._id}`} className="mainNav__right__item nav-icon" legacyBehavior >
-                        {currUser?.profilePhoto ? (
+                    <Link href={`/user/${userAuth?._id}`} className="mainNav__right__item nav-icon" legacyBehavior >
+                        {currUser?.image ? (
                                 <div className="mainNav__right__item img__rounded">
-                                <Image src={currUser?.profilePhoto} width={100} height={100} alt="personal img" />
+                                <Image src={currUser?.image} width={100} height={100} alt="personal img" />
                                 </div>
                         ) : (
-                                <>
+                                <div className="mainNav__right__item__logoLitter">
                                     {userAuth?.name && userAuth.name[0]}
-                                </>
+                                </div>
                             )}
                     </Link>
                     <div className="mainNav__right__item nav-icon" onClick={() => setNotificationOpened(!notificationOpened)}>

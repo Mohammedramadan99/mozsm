@@ -8,11 +8,11 @@ handler.use(isAuth).put(async (req, res) =>
 {
     await db.connect();
     try {
-        const { unFollowId } = req.body;
+        const { id } = req.body;
         const loginUserId = req.user._id;
-        console.log(unFollowId)
+        console.log(id)
         await User.findByIdAndUpdate(
-            unFollowId,
+            id,
             {
                 $pull: { followers: loginUserId },
                 isFollowing: false,
@@ -23,12 +23,17 @@ handler.use(isAuth).put(async (req, res) =>
         await User.findByIdAndUpdate(
             loginUserId,
             {
-                $pull: { following: unFollowId },
+                $pull: { following: id },
             },
             { new: true }
         );
 
-        res.status(200).json("You have successfully unfollowed this user");
+        const user = await User.findById(id).populate('posts')
+            res.status(200).json({
+                success:true,
+                profile:user,
+                message:"You have successfully followed this user",
+            });            
     } catch (err) {
         res.status(500).json(err.message)
     }

@@ -5,18 +5,18 @@ import Spinner from '../../components/Spinner'
 import Posts from '../MainPage/Posts'
 import Sidebar from './Sidebar'
 import { useSelector } from 'react-redux'
-import { fetchUsersAction, followUserAction, unfollowUserAction, uploadProfilePhototAction, uploadCoverPhototAction, reset, userProfileAction } from '../../store/usersSlice'
+import { fetchUsersAction, followUserAction, unfollowUserAction, uploadProfilePhototAction, uploadCoverPhototAction } from '../../store/usersSlice'
 import { useRouter } from 'next/router'
-import { wrapper } from '../../store/store'
 import Image from 'next/image'
 import Edit from '@mui/icons-material/Edit'
+import Button from '../SmallComponents/Button'
 
 function UserDetails()
 {
     const router = useRouter()
     const { id } = router.query
     const dispatch = useDispatch()
-    const [image, setImage] = useState("");
+    const [uploadImage, setUploadImage] = useState("");
     const [imagePreview, setImagePreview] = useState("")
     //User data from store
     const {
@@ -27,7 +27,6 @@ function UserDetails()
         unFollowed,
         userAuth,
         loading,
-        profilePhoto
     } = useSelector(state => state.users);
     const [editPhoto, setEditPhoto] = useState(false)
     const [editCover, setEditCover] = useState(false)
@@ -49,7 +48,7 @@ function UserDetails()
         {
             if (Reader.readyState === 2)
             {
-                setImage(Reader.result);
+                setUploadImage(Reader.result);
                 setImagePreview(Reader.result);
             }
         };
@@ -57,14 +56,13 @@ function UserDetails()
     const uploadProfilePhoto = (e) =>
     {
         // e.preventDefault()
-        const theImage = { image }
+        const theImage = { uploadImage }
         dispatch(uploadProfilePhototAction(theImage))
     }
     const uploladcoverPhoto = (e) =>
     {
         // e.preventDefault()
-        const theImage = { image }
-        console.log(image)
+        const theImage = { uploadImage }
         dispatch(uploadCoverPhototAction(theImage))
     }
     const closeHandler = () =>
@@ -76,16 +74,15 @@ function UserDetails()
     const [follow, setFollow] = useState(false)
     useEffect(() =>
     {
-        console.log("id", id)
-        dispatch(userProfileAction(id))
         const ifFollowed = profile?.followers?.find(item => item === userAuth._id)
         setFollow(ifFollowed ? true : false)
-    }, [dispatch, id, followed, unFollowed, profile?.followers?.length])
+    }, [id, followed, unFollowed, profile?.followers?.length])
     if (profileImgUpdated)
     {
         dispatch(reset())
         router.push("/")
     }
+    
     return (
         <div className='user'>
             {/* {loading ? <Spinner /> : ( */}
@@ -113,28 +110,32 @@ function UserDetails()
                         <div className="user__top__info">
                             <div className={profile?._id !== userAuth?._id ? "user__top__info__personalImg center" : "user__top__info__personalImg flex-start"}>
                                 {
-                                    profile?._id === userAuth?._id &&
+                                profile?._id === userAuth?._id && profile?.accountType !== "google" &&
                                     <div className="overlay" onClick={() => setEditPhoto(true)}>
                                         <div className="overlay__edit">
                                             <Edit />
                                         </div>
                                     </div>
                                 }
-                                {profile?.profilePhoto ? <Image src={profile?.profilePhoto} alt="img" width={150} height={150} objectFit="cover" /> : (
+                            {profile?.image ? (
+                                <div className='user__top__info__personalImg__container'>
+                                    <Image src={profile?.image} alt="img" width={250} height={250} style={{ objectFit:"cover" }} />
+                                </div>
+                            ) : (
                                     <div className='personalImgTxt'>
                                         profile image
                                     </div>
-                                )}
+                            )}
                             </div>
                             <div className="user__top__info__name "> {profile?.name} </div>
                             <div className="user__top__info__following">
-                                {userAuth?._id !== profile?.id && (
+                                {userAuth?._id !== profile?._id && (
                                     follow ? (
-                                        <div className="user__top__info__following__unFollowBtn" onClick={() => dispatch(unfollowUserAction(id))}>
-                                            unFollow
+                                        <div className="user__top__info__following__unFollowBtn" onClick={() => dispatch(unfollowUserAction({id,profile:true}))}>
+                                            unfollow
                                         </div>
                                     ) : (
-                                        <div className="user__top__info__following__followBtn" onClick={() => dispatch(followUserAction(id))}>
+                                        <div className="user__top__info__following__followBtn" onClick={() => dispatch(followUserAction({id,profile:true}))}>
                                             follow
                                         </div>
                                     )
@@ -211,5 +212,6 @@ function UserDetails()
     )
     
 }
+
 
 export default UserDetails

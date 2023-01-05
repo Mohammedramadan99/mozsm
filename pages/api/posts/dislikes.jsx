@@ -17,8 +17,8 @@ handler.use(isAuth).put(async (req, res) =>
     {
         // await db.connect();
         //1.Find the post to be disLiked
-        const { postId } = req?.body;
-        const post = await Post.findById(postId);
+        const { id } = req?.body;
+        const post = await Post.findById(id);
         //2.Find the login user
         console.log("post", post)
         const loginUserId = req?.user?._id;
@@ -32,7 +32,7 @@ handler.use(isAuth).put(async (req, res) =>
         if (alreadyLiked)
         {
             const post = await Post.findByIdAndUpdate(
-                postId,
+                id,
                 {
                     $pull: { likes: loginUserId },
                     isLiked: false,
@@ -43,17 +43,13 @@ handler.use(isAuth).put(async (req, res) =>
                     runValidators: true,
                 }
             );
-            res.status(200).json({
-                success: true,
-                post
-            });
         }
         //Toggling
         //Remove this user from dislikes if already disliked
         if (isDisLiked)
         {
             const post = await Post.findByIdAndUpdate(
-                postId,
+                id,
                 {
                     $pull: { disLikes: loginUserId },
                     isDisLiked: false,
@@ -63,14 +59,16 @@ handler.use(isAuth).put(async (req, res) =>
                     runValidators: true,
                 }
             );
+            const posts = await Post.find().populate('comments').populate('user').sort('-createdAt')
             res.status(200).json({
                 success: true,
+                posts,
                 post
             });
         } else
         {
             const post = await Post.findByIdAndUpdate(
-                postId,
+                id,
                 {
                     $push: { disLikes: loginUserId },
                     isDisLiked: true,
@@ -80,8 +78,10 @@ handler.use(isAuth).put(async (req, res) =>
                     runValidators: true,
                 }
             );
+            const posts = await Post.find().populate('comments').populate('user').sort('-createdAt')
             res.status(200).json({
                 success: true,
+                posts,
                 post
             });
         }
