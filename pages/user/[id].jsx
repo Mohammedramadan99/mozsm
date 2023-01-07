@@ -29,7 +29,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
       // await store.dispatch(fetchUsersAction({url:baseUrl}));
       // await store.dispatch(getCommentsAction({url:baseUrl}))
   
-      await store.dispatch(LoggedInUserAction({url:baseUrl}));
+      // await store.dispatch(LoggedInUserAction({url:baseUrl}));
     } catch (error) {
       console.log("errorServer",error)
     }

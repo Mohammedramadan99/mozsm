@@ -98,10 +98,9 @@ export const userProfileAction = createAsyncThunk(
 
 export const LoggedInUserAction = createAsyncThunk(
   "user/loggedIn",
-  async ({url}, { rejectWithValue, getState, dispatch }) => {
+  async (email, { rejectWithValue, getState, dispatch }) => {
     //get user token
     const user = getState().users;
-    const { data: session } = useSession()
     const { userAuth } = user;
     const config = {
       headers: {
@@ -111,17 +110,13 @@ export const LoggedInUserAction = createAsyncThunk(
     //http call
     try {
       // const dev = process.env.NODE_ENV !== "production";
-      console.log("##11",session)
-      const email = session?.user?.email
       // const server = dev
       //   ? "http://localhost:3000"
       //   : productionLink;
-      console.log("firsot",email)
-      console.log("session",session)
-      let link = `${url}/api/users/profile`;
+      let link = `${origin}/api/users/profile`;
       const { data } = await axios.post(
         `${link}`,
-        {email},
+        email,
         config
       );
 

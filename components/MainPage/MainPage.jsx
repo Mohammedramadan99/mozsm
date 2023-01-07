@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router'
 import React, { useEffect } from 'react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import dynamic from 'next/dynamic'
 import { toggleAddLikesToPost, toggleAddDisLikesToPost, fetchPostsAction } from '../../store/postsSlice'
 // import { wrapper } from '../../store/store'
@@ -11,10 +11,14 @@ import Posts from './Posts'
 // const Sidebar = dynamic(() => import('./Sidebar'), { ssr: false })
 import Sidebar from './Sidebar'
 import { wrapper } from '../../store/store'
+import { LoggedInUserAction } from '../../store/usersSlice'
+import { useSession } from 'next-auth/react'
 
 function MainPage()
 {
     const router = useRouter()
+    const dispatch = useDispatch()
+    const {data:session} = useSession()
     // const { appErr: posterror } = useSelector(state => state.post)
     // const { appErr: commenterror } = useSelector(state => state.comment)
     
@@ -25,7 +29,9 @@ function MainPage()
     //         router.push('/login')
     //     }
     // }, [])
-
+    useEffect(() => {
+        dispatch(LoggedInUserAction({email:session?.user?.email}))
+    }, [session])
     return (
         <div className='mainPage'>
             <div className="mainPage-container">

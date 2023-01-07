@@ -35,7 +35,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
     await store.dispatch(fetchPostsAction({url:baseUrl}));
     await store.dispatch(fetchUsersAction({url:baseUrl,props:4}));
     await store.dispatch(getCommentsAction({url:baseUrl}));
-    await store.dispatch(LoggedInUserAction({url:baseUrl,email:session?.user?.email}));
+    // await store.dispatch(LoggedInUserAction({url:baseUrl,email:session?.user?.email}));
   }
 )
 // Home.getInitialProps = wrapper.getInitialPageProps(

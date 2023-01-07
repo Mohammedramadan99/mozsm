@@ -5,15 +5,16 @@ import Spinner from '../../components/Spinner'
 import Posts from '../MainPage/Posts'
 import Sidebar from './Sidebar'
 import { useSelector } from 'react-redux'
-import { fetchUsersAction, followUserAction, unfollowUserAction, uploadProfilePhototAction, uploadCoverPhototAction } from '../../store/usersSlice'
+import { fetchUsersAction, followUserAction, unfollowUserAction, uploadProfilePhototAction, uploadCoverPhototAction, LoggedInUserAction } from '../../store/usersSlice'
 import { useRouter } from 'next/router'
 import Image from 'next/image'
 import Edit from '@mui/icons-material/Edit'
-import Button from '../SmallComponents/Button'
+import { useSession } from 'next-auth/react'
 
 function UserDetails()
 {
     const router = useRouter()
+    const {data:session} = useSession()
     const { id } = router.query
     const dispatch = useDispatch()
     const [uploadImage, setUploadImage] = useState("");
@@ -83,6 +84,11 @@ function UserDetails()
         router.push("/")
     }
     
+    useEffect(() => {
+        dispatch(LoggedInUserAction({email:session?.user?.email}))
+    }, [session])
+    
+    console.log({session})
     return (
         <div className='user'>
             {/* {loading ? <Spinner /> : ( */}

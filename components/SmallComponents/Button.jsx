@@ -5,10 +5,10 @@ function Button({word}) {
     console.log({letters})
   return (
     <button>
-        <span class="span-mother">
+        <span className="span-mother">
             {letters?.map(l => <span> {l} </span>)}
         </span>
-        <span class="span-mother2">
+        <span className="span-mother2">
             {letters?.map(l => <span> {l} </span>)}
             
         </span>
