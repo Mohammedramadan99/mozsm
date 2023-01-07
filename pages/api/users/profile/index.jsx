@@ -14,6 +14,7 @@ handler.post(async (req, res) =>
   await db.connect()
   try
   {
+    console.log("requestBody",req.body)
     let email = req.body.email
     const getUser = await User.findOne({email});
     res.status(200).json({

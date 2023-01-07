@@ -3,6 +3,7 @@ import { createAsyncThunk, createSlice, createAction } from "@reduxjs/toolkit";
 import axios from "axios";
 import { HYDRATE } from "next-redux-wrapper";
 import absoluteUrl from "next-absolute-url";
+import { getSession, useSession } from "next-auth/react";
 
 const hostname =
   typeof window !== "undefined" && window.location.hostname
@@ -62,7 +63,7 @@ export const loginUserAction = createAsyncThunk(
 // Profile
 export const userProfileAction = createAsyncThunk(
   "user/profile",
-  async (id, { rejectWithValue, getState, dispatch }) => {
+  async ({url,id}, { rejectWithValue, getState, dispatch }) => {
     //get user token
     const user = getState().users;
     const { userAuth } = user;
@@ -79,7 +80,7 @@ export const userProfileAction = createAsyncThunk(
       const server = dev
         ? "http://localhost:3000"
         : productionLink;
-      let link = `${server}/api/users/profile/${id}`;
+      let link = `${url}/api/users/profile/${id}`;
       const { data } = await axios.get(
         link, // `http://localhost:3000/api/users/profile/${id}`
         config
@@ -97,9 +98,10 @@ export const userProfileAction = createAsyncThunk(
 
 export const LoggedInUserAction = createAsyncThunk(
   "user/loggedIn",
-  async (email, { rejectWithValue, getState, dispatch }) => {
+  async ({url}, { rejectWithValue, getState, dispatch }) => {
     //get user token
     const user = getState().users;
+    const { data: session } = useSession()
     const { userAuth } = user;
     const config = {
       headers: {
@@ -108,12 +110,15 @@ export const LoggedInUserAction = createAsyncThunk(
     };
     //http call
     try {
-      const dev = process.env.NODE_ENV !== "production";
-
-      const server = dev
-        ? "http://localhost:3000"
-        : productionLink;
-      let link = `${server}/api/users/profile`;
+      // const dev = process.env.NODE_ENV !== "production";
+      console.log("##11",session)
+      const email = session?.user?.email
+      // const server = dev
+      //   ? "http://localhost:3000"
+      //   : productionLink;
+      console.log("firsot",email)
+      console.log("session",session)
+      let link = `${url}/api/users/profile`;
       const { data } = await axios.post(
         `${link}`,
         {email},
@@ -269,7 +274,7 @@ export const fetchUserDetailsAction = createAsyncThunk(
 //fetch all users
 export const fetchUsersAction = createAsyncThunk(
   "user/list",
-  async (num, { rejectWithValue, getState, dispatch }) => {
+  async ({url,props}, { rejectWithValue, getState, dispatch }) => {
     //get user token
     const user = process.browser && getState()?.users;
     const { userAuth } = user;
@@ -286,9 +291,9 @@ export const fetchUsersAction = createAsyncThunk(
       const server = dev
         ? "http://localhost:3000"
         : productionLink;
-      num
-        ? (link = `${server}/api/users?limit=${num}`)
-        : (link = `${server}/api/users`);
+        props
+        ? (link = `${url}/api/users?limit=${props}`)
+        : (link = `${url}/api/users`);
       const { data } = await axios.get(link, config);
       return data;
     } catch (error) {
@@ -820,10 +825,12 @@ const usersSlices = createSlice({
     //logout
     builder.addCase(LoggedInUserAction.pending, (state, action) =>
     {
+      
       state.loading = false;
     });
     builder.addCase(LoggedInUserAction.fulfilled, (state, action) =>
     {
+      console.log("logged FulFF",action.payload)
       state.userAuth = action?.payload.user;
       state.loading = false;
       state.appErr = null;
@@ -831,6 +838,7 @@ const usersSlices = createSlice({
     });
     builder.addCase(LoggedInUserAction.rejected, (state, action) =>
     {
+      console.log("logged regg",action.payload)
       // state.appErr = action?.payload;
       // state.serverErr = null;
       state.loading = false;

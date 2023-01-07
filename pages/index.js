@@ -25,35 +25,27 @@ export default function Home() {
 }
 
 export const getServerSideProps = wrapper.getServerSideProps(
-    store => async (context) =>
+    store => async ({req,res,context}) =>
   {
     const session = await getSession(context)
 
-    const {query} = context
-    const {like,dislike,comment} = query
-    console.log({session})
+    const protocol = req.headers['x-forwarded-proto'] || 'http'
+    const baseUrl = req ? `${protocol}://${req.headers.host}` : ''
 
-    // if(like || dislike || comment) {
-    //   await store.dispatch(fetchPostsAction());
-    //   await store.dispatch(LoggedInUserAction(session?.user?.email));
-    //   // await store.dispatch(LoggedInUserAction());
-    //   console.log("#1 reaction",query)
-    // }
-    // // await store.dispatch(fetchUsersAction(4));
-    await store.dispatch(fetchPostsAction());
-    await store.dispatch(getCommentsAction());
-
-    await store.dispatch(fetchUsersAction(4));
-    await store.dispatch(LoggedInUserAction(session?.user?.email));
-    // console.log("getServerSideProps returns ->", data.payload?.users)
+    await store.dispatch(fetchPostsAction({url:baseUrl}));
+    await store.dispatch(fetchUsersAction({url:baseUrl,props:4}));
+    await store.dispatch(getCommentsAction({url:baseUrl}));
+    await store.dispatch(LoggedInUserAction({url:baseUrl,email:session?.user?.email}));
   }
 )
 // Home.getInitialProps = wrapper.getInitialPageProps(
 //   (store) =>
 //     async ({ pathname, req, res }) =>
 //     {
-//       console.log({pathname})
-//       await store.dispatch(fetchPostsAction());
-//       await store.dispatch(fetchUsersAction(4));
+//       const protocol = req.headers['x-forwarded-proto'] || 'http'
+//       const baseUrl = req ? `${protocol}://${req.headers.host}` : ''
+//       console.log({baseUrl})
+//       await store.dispatch(fetchPostsAction({url:baseUrl}));
+//       await store.dispatch(fetchUsersAction({url:baseUrl,props:4}));
 //     }
 // );

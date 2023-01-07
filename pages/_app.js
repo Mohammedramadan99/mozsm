@@ -9,15 +9,15 @@ import {SessionProvider} from 'next-auth/react'
 const App = ({ Component, pageProps,session }) => {
   const store = useStore((state) => state);
   return (
-    <PersistGate persistor={store.__persistor} loading={<div>Loading...</div>}>
-        <AnimatePresence mode="wait">
+    <AnimatePresence mode="wait">
           <SessionProvider session={session}>
-            <Layout>
-              <Component {...pageProps} />
-            </Layout>
+            <PersistGate persistor={store.__persistor} loading={<div>Loading...</div>}>
+              <Layout>
+                <Component {...pageProps} />
+              </Layout>
+            </PersistGate>
           </SessionProvider>
         </AnimatePresence>
-    </PersistGate>
 
   );
 };

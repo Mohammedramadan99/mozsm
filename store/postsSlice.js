@@ -16,7 +16,6 @@ const origin =
   typeof window !== "undefined" && window.location.origin
     ? window.location.origin
     : "";
-
 //Create
 export const createpostAction = createAsyncThunk(
   "post/created",
@@ -98,16 +97,16 @@ export const deletePostAction = createAsyncThunk(
 //fetch all posts
 export const fetchPostsAction = createAsyncThunk(
   "post/list",
-  async (_, { rejectWithValue, getState, dispatch }) => {
+  async ({url}, { rejectWithValue, getState, dispatch }) => {
     try
     {
       const dev = process.env.NODE_ENV !== "production";
-
+      // console.log("originUrl", window.location.origin)
       const server = dev
         ? "http://localhost:3000"
         : productionLink;
       const { data } = await axios.get(
-        `${server}/api/posts`
+        `${url}/api/posts`
       );
       return data;
     } catch (error) {
@@ -222,7 +221,7 @@ export const createCommentAction = createAsyncThunk(
 //delete
 export const getCommentsAction = createAsyncThunk(
   "post/comment/all",
-  async (postId, { rejectWithValue, getState, dispatch }) => {
+  async ({url}, { rejectWithValue, getState, dispatch }) => {
     //get user token
     const user = process.browser &&  getState()?.users;
     const { userAuth } = user;
@@ -241,10 +240,7 @@ export const getCommentsAction = createAsyncThunk(
 
       const dev = process.env.NODE_ENV !== "production";
 
-      const server = dev
-        ? "http://localhost:3000"
-        : productionLink;
-      let link = `${server}/api/comments`;
+      let link = `${url}/api/comments`;
       const { data } = await axios.get(link, config);
       return data;
     } catch (error) {
@@ -419,6 +415,7 @@ const postSlice = createSlice({
     });
     builder.addCase(fetchPostsAction.fulfilled, (state, action) =>
     {
+      console.log("fetchFul",action.payload)
       state.postLists = action?.payload;
       state.loading = false;
       state.appErr = null;
@@ -426,6 +423,7 @@ const postSlice = createSlice({
     });
     builder.addCase(fetchPostsAction.rejected, (state, action) =>
     {
+      console.log("fetchErr",action.error.message)
       state.loading = false;
       state.appErr = null;
       state.serverErr = action?.error?.message;

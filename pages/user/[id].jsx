@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 import { wrapper } from "../../store/store"
 import { fetchUserDetailsAction, fetchUsersAction, LoggedInUserAction, userProfileAction } from "../../store/usersSlice"
 import {getCommentsAction} from '../../store/postsSlice'
-import { getSession } from 'next-auth/react';
+import { getSession, useSession } from 'next-auth/react';
 const UserDetails = dynamic(() => import('../../components/UserDetails/UserDetails'))
 function userDetails()
 {
@@ -19,15 +19,20 @@ function userDetails()
 }
 
 export const getServerSideProps = wrapper.getServerSideProps(
-    store => async (context) =>
+    (store) => async ({req,res,params}) =>
   {
-    const session = await getSession(context)
-    const { params } = context
-    const { id } = params
-    await store.dispatch(userProfileAction(id))
-    await store.dispatch(fetchUsersAction());
-    await store.dispatch(getCommentsAction())
-    await store.dispatch(LoggedInUserAction(session?.user?.email));
+    try {
+      const protocol = req.headers['x-forwarded-proto'] || 'http'
+      const baseUrl = req ? `${protocol}://${req.headers.host}` : ''
+      const { id } = params
+      await store.dispatch(userProfileAction({url:baseUrl,id}))
+      // await store.dispatch(fetchUsersAction({url:baseUrl}));
+      // await store.dispatch(getCommentsAction({url:baseUrl}))
+  
+      await store.dispatch(LoggedInUserAction({url:baseUrl}));
+    } catch (error) {
+      console.log("errorServer",error)
+    }
   }
 )
 
