@@ -25,9 +25,8 @@ export default function Home() {
 }
 
 export const getServerSideProps = wrapper.getServerSideProps(
-    store => async ({req,res,context}) =>
+    store => async ({req,res}) =>
   {
-    const session = await getSession(context)
 
     const protocol = req.headers['x-forwarded-proto'] || 'http'
     const baseUrl = req ? `${protocol}://${req.headers.host}` : ''

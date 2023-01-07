@@ -100,11 +100,11 @@ export const fetchPostsAction = createAsyncThunk(
   async ({url}, { rejectWithValue, getState, dispatch }) => {
     try
     {
-      const dev = process.env.NODE_ENV !== "production";
+      // const dev = process.env.NODE_ENV !== "production";
       // console.log("originUrl", window.location.origin)
-      const server = dev
-        ? "http://localhost:3000"
-        : productionLink;
+      // const server = dev
+      //   ? "http://localhost:3000"
+      //   : productionLink;
       const { data } = await axios.get(
         `${url}/api/posts`
       );
