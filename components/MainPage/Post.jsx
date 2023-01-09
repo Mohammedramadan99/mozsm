@@ -12,7 +12,9 @@ import { fadeInUp } from '../../utils/animations';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/router';
 import Moment from 'moment'
-import Button from '../SmallComponents/Button';
+// import Button from '../SmallComponents/Button';
+const Button = dynamic(() => import('../SmallComponents/Button'))
+
 import moment from 'moment/moment'
 
 const Comment = dynamic(() => import('./Comment'))
@@ -22,7 +24,7 @@ function Post({ direction, post, profile })
 {
     const dispatch = useDispatch()
     const comment = useSelector(state => state?.posts);
-    const { actionLoading,comments, appErr, serverErr } = comment;
+    const { createCommentLoading,comments, appErr, serverErr } = comment;
     const { userAuth } = useSelector(state => state.users)
     const [postComments, setPostComments] = useState([])
     const { postLists, loading: postLoading, likeLoading } = useSelector(state => state.posts)
@@ -108,8 +110,8 @@ function Post({ direction, post, profile })
         // )
         console.log("commentsAfter",comments)
         console.log("postAfter",post)
-        setSortedComments(comments?.filter(comment => comment.post === post._id))
-        console.log("setSortedCommentsAfter",sortedComments)
+        // setSortedComments(comments?.filter(comment => comment.post === post._id))
+        // console.log("setSortedCommentsAfter",sortedComments)
         // setSortedComments(arr.sort((a, b) =>  a.createdAt.localeCompare(b.createdAt)))
         // const post.comments.sort((a,b) => new Moment(a.createdAt).format('YYYYMMDD') - new Moment(b.createdAt).format('YYYYMMDD'))
         // console.log({setSortedComments})
@@ -148,7 +150,8 @@ function Post({ direction, post, profile })
                                 <span> {post?.likes?.length} <strong> like </strong> </span>
                                 <span> {post?.disLikes?.length} <strong> dislike </strong> </span>
                                 <span> {
-                                    direction === "user__bottom__postsGroup" ? postComments?.length : post?.comments?.length
+                                    // direction === "user__bottom__postsGroup" ? postComments?.length : post?.comments?.length
+                                    post?.comments?.length
                                 } <strong> comments </strong> </span>
                             </>
                         </div>
@@ -175,7 +178,7 @@ function Post({ direction, post, profile })
                     </div>
                     <form className={`${direction}__posts__container__commentsGroupe__writeComment__input`} onSubmit={(e) => addCommentHandler(post, e)}>
                         <input type="text" value={commentContent} placeholder='write a comment' onChange={e => setCommentContent(e.target.value)} />
-                            {actionLoading ? (
+                            {createCommentLoading ? (
                                 <div style={{ position: "relative" }}>
                                     <Spinner />
                                 </div>
@@ -185,7 +188,7 @@ function Post({ direction, post, profile })
                     </form>
                 </div>
                 <div className={`${direction}__posts__container__commentsGroupe__comments`}>
-                    {direction === "user__bottom__postsGroup" ? postComments?.map((comment, inx) => <Comment key={inx} comment={comment} />) : sortedComments?.map((comment, inx) => <Comment key={inx} comment={comment} />)}
+                    {direction === "user__bottom__postsGroup" ? postComments?.map((comment, inx) => <Comment key={inx} comment={comment} />) : post?.comments?.map((comment, inx) => <Comment key={inx} comment={comment} />)}
                 </div>
             </div>
         </motion.div>

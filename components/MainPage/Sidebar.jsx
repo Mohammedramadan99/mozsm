@@ -4,7 +4,9 @@ import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchUsersAction, followUserAction, LoggedInUserAction, unfollowUserAction, userProfileAction } from '../../store/usersSlice'
-import Person from './Person'
+// import Person from './Person'
+const Person = dynamic(() => import('./Person'), { ssr: false })
+
 import {motion} from 'framer-motion'
 import { fadeInUp, stagger } from '../../utils/animations'
 import { useSession } from 'next-auth/react'

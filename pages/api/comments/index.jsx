@@ -43,20 +43,23 @@ handler.use(isAuth).post(async (req, res) =>
 
     try
     {
-        const comment = await Comment.create({
+        await Comment.create({
             post: postId,
             user,
             description,
         });
         
-        const posts = await Post.find().populate('comments').populate('user').sort('-createdAt')
-        const comments = await Comment.find().sort('-createdAt')
+        const post = await Post.findById(postId).populate({
+            path:'comments',
+            options: {sort: {'createdAt' : -1} }
+        }).populate('user').sort('-createdAt')
+        // const comments = await Comment.find().sort('-createdAt')
         
         res.status(200).json({
             success:true,
-            posts,
-            comments,
-            comment
+            post,
+            // comments,
+            // comment
         });
     } catch (error)
     {

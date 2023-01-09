@@ -58,11 +58,17 @@ handler.use(isAuth).put(async (req, res) =>
                     new: true,
                     runValidators: true,
                 }
-            );
-            const posts = await Post.find().populate('comments').populate('user').sort('-createdAt')
+            ).populate({
+                path: 'user',
+                model: 'User',
+            }).populate({
+                path:'comments',
+                options: {sort: {'createdAt' : -1} }
+            }).sort('-createdAt');
+            // const posts = await Post.find().populate('comments').populate('user').sort('-createdAt')
             res.status(200).json({
                 success: true,
-                posts,
+                // posts,
                 post
             });
         } else
@@ -77,11 +83,17 @@ handler.use(isAuth).put(async (req, res) =>
                     new: true,
                     runValidators: true,
                 }
-            );
-            const posts = await Post.find().populate('comments').populate('user').sort('-createdAt')
+            ).populate({
+                path: 'user',
+                model: 'User',
+            }).populate({
+                path:'comments',
+                options: {sort: {'createdAt' : -1} }
+            }).sort('-createdAt');
+            // const posts = await Post.find().populate('comments').populate('user').sort('-createdAt')
             res.status(200).json({
                 success: true,
-                posts,
+                // posts,
                 post
             });
         }

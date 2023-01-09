@@ -10,11 +10,11 @@ const storage = require('redux-persist/lib/storage').default;
 
 // BINDING MIDDLEWARE
 const bindMiddleware = (middleware) => {
-  if (process.env.NODE_ENV !== 'production') {
+  // if (process.env.NODE_ENV !== 'production') { // because we don't want redux dev tool to run in production
     const { composeWithDevTools } = require('redux-devtools-extension');
     return composeWithDevTools(applyMiddleware(...middleware));
-  }
-return applyMiddleware(...middleware);
+  // }
+// return applyMiddleware(...middleware);
 };
 
 const makeStore = ({ isServer }) => {
@@ -40,7 +40,6 @@ const makeStore = ({ isServer }) => {
 
     const store = createStore(
       persistedReducer,
-      {},
       bindMiddleware([thunkMiddleware, logger])
     ); // Creating the store again
 

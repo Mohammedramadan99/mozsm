@@ -36,7 +36,10 @@ handler.get(async (req, res) =>
         const posts = await Post.find().populate({
             path: 'user',
             model: 'User',
-        }).populate('comments').sort('-createdAt')
+        }).populate({
+            path:'comments',
+            options: {sort: {'createdAt' : -1} }
+        }).sort('-createdAt')
         // const posts = await Post.find({}).populate('comments').populate('user')
         res.status(200).json(posts)
     } catch (err) {

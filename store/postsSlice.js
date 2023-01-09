@@ -449,8 +449,11 @@ const postSlice = createSlice({
       state.actionLoading = true;
     });
     builder.addCase(toggleAddLikesToPost.fulfilled, (state, action) => {
-      state.postLists = action?.payload?.posts
-      state.likes = action?.payload?.post;
+      const updatedPosts = state?.postLists?.map((post) => {
+        if (post._id === action.payload.post._id) return action.payload.post;
+        return post;
+      });
+      state.postLists = updatedPosts;
       state.actionLoading = false;
       state.appErr = null;
       state.serverErr = null;
@@ -465,8 +468,11 @@ const postSlice = createSlice({
       state.actionLoading = true;
     });
     builder.addCase(toggleAddDisLikesToPost.fulfilled, (state, action) => {
-      state.postLists = action?.payload?.posts;
-      state.dislikes = action?.payload?.post;
+      const updatedPosts = state?.postLists?.map((post) => {
+        if (post._id === action.payload.post._id) return action.payload.post;
+        return post;
+      });
+      state.postLists = updatedPosts;
       state.actionLoading = false;
       state.appErr = null;
       state.serverErr = null;
@@ -482,10 +488,16 @@ const postSlice = createSlice({
       state.createCommentLoading = true;
     });
     builder.addCase(createCommentAction.fulfilled, (state, action) => {
+      // const data = state.comments.push(action.payload.comment);
+      
+      // state.comments = [...state.comments, action.payload.comment].sort((a, b) => b.createdAt > a.createdAt ? 1 : -1)
+      const updatedPosts = state?.postLists?.map((post) => {
+        if (post._id === action.payload.post._id) return action.payload.post;
+        return post;
+      });
       state.createCommentLoading = false;
-      state.postLists = action?.payload?.posts;
-      state.comments = action.payload.comments;
-      state.commentCreated = action?.payload.comment;
+      state.postLists = updatedPosts;
+
       state.appErr = null;
       state.serverErr = null;
     });

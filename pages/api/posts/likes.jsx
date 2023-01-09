@@ -61,15 +61,21 @@ handler.use(isAuth).put(async (req, res) =>
                     new: true,
                     runValidators: true,
                 }
-            );
-            const posts = await Post.find().populate({
+            ).populate({
                 path: 'user',
                 model: 'User',
-            }).populate('comments').sort('-createdAt')
+            }).populate({
+                path:'comments',
+                options: {sort: {'createdAt' : -1} }
+            }).sort('-createdAt');
+            // const posts = await Post.find().populate({
+            //     path: 'user',
+            //     model: 'User',
+            // }).populate('comments').sort('-createdAt')
             res.status(200).json({
                 success: true,
                 post,
-                posts
+                // posts
             });
         } else
         {
@@ -84,15 +90,21 @@ handler.use(isAuth).put(async (req, res) =>
                     new: true,
                     runValidators: true,
                 }
-            );
-            const posts = await Post.find().populate({
-                path: 'user',
-                model: 'User',
-            }).populate('comments').sort('-createdAt')
+            ).populate({
+                    path: 'user',
+                    model: 'User',
+                }).populate({
+                    path:'comments',
+                    options: {sort: {'createdAt' : -1} }
+                }).sort('-createdAt');
+            // const posts = await Post.find().populate({
+            //     path: 'user',
+            //     model: 'User',
+            // }).populate('comments').sort('-createdAt')
             res.status(200).json({
                 success: true,
                 post,
-                posts
+                // posts
             });
         }
     } catch (error) {

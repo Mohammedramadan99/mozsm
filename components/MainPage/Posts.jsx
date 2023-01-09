@@ -3,18 +3,14 @@ import { useEffect, useState } from 'react'
 import WritePost from './WritePost'
 import { useSelector, useDispatch } from 'react-redux'
 
-import { toggleAddLikesToPost, toggleAddDisLikesToPost, fetchPostsAction } from '../../store/postsSlice'
-
 import { useRouter } from 'next/router'
 
-import { userProfileAction } from '../../store/usersSlice'
 import dynamic from 'next/dynamic'
 import { stagger } from '../../utils/animations'
 import { motion } from 'framer-motion'
-import { wrapper } from '../../store/store'
 // import MyPost from './MyPost'
-// const Post = dynamic(() => import('./Post'))
-import Post from './Post'
+const Post = dynamic(() => import('./Post'))
+// import Post from './Post'
 const Spinner = dynamic(() => import('../Spinner'))
 
 function Posts({ direction, user })
