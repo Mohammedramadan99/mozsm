@@ -218,7 +218,7 @@ export const fetchUserDetailsAction = createAsyncThunk(
 //fetch all users
 export const fetchUsersAction = createAsyncThunk(
   "user/list",
-  async ({url,props}, { rejectWithValue, getState, dispatch }) => {
+  async (num, { rejectWithValue, getState, dispatch }) => {
     //get user token
     const user = process.browser && getState()?.users;
     const { userAuth } = user;
@@ -228,16 +228,10 @@ export const fetchUsersAction = createAsyncThunk(
       },
     };
     try {
-      let link = "";
-      // num ? (link = `${origin}/api/users?limit=${num}`) : link = `${origin}/api/users`
-      const dev = process.env.NODE_ENV !== "production";
-
-      const server = dev
-        ? "http://localhost:3000"
-        : productionLink;
-        props
-        ? (link = `${url}/api/users?limit=${props}`)
-        : (link = `${url}/api/users`);
+      let link = ''
+        num
+        ? (link = `${URL}/api/users?limit=${num}`)
+        : (link = `${URL}/api/users`);
       const { data } = await axios.get(link, config);
       return data;
     } catch (error) {
