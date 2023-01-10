@@ -45,10 +45,9 @@ export const fetchPostsAction = createAsyncThunk(
       // const server = dev
       //   ? "http://localhost:3000"
       //   : productionLink;
+      let link = `${URL}/api/posts`;
       
-      const { data } = await axios.get(
-        `${URL}/api/posts`
-      );
+      const { data } = await axios.get(link);
       return data;
     } catch (error) {
       if (!error?.response) throw error;
@@ -70,7 +69,7 @@ export const postAction = createAsyncThunk(
       },
     };
     try {
-      const link = `${URL}/api/posts/${type === 'like' ? "like" : "dislike" }`
+      let link = `${URL}/api/posts/${type === 'like' ? "like" : "dislike" }`
       const { data } = await axios.put(
         link,
         { id },
