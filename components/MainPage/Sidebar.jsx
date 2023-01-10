@@ -5,6 +5,8 @@ import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchUsersAction, followUserAction, LoggedInUserAction, unfollowUserAction, userProfileAction } from '../../store/usersSlice'
 // import Person from './Person'
+import dynamic from 'next/dynamic';
+
 const Person = dynamic(() => import('./Person'), { ssr: false })
 
 import {motion} from 'framer-motion'

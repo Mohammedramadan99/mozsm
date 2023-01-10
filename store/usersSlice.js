@@ -1,14 +1,6 @@
-import { diff } from "jsondiffpatch";
-import { createAsyncThunk, createSlice, createAction } from "@reduxjs/toolkit";
-import axios from "axios";
-import { HYDRATE } from "next-redux-wrapper";
-import absoluteUrl from "next-absolute-url";
-import { getSession, useSession } from "next-auth/react";
 
-const hostname =
-  typeof window !== "undefined" && window.location.hostname
-    ? window.location.hostname
-    : "";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import axios from "axios";
 const origin =
   typeof window !== "undefined" && window.location.origin
     ? window.location.origin
@@ -214,38 +206,6 @@ export const updateUserAction = createAsyncThunk(
   }
 );
 
-//Update Password
-export const updatePasswordAction = createAsyncThunk(
-  "password/update",
-  async (password, { rejectWithValue, getState, dispatch }) => {
-    //get user token
-    const user = process.browser && getState()?.users;
-    const { userAuth } = user;
-    const config = {
-      headers: {
-        Authorization: `Bearer ${userAuth?.token}`,
-      },
-    };
-    //http call
-    try {
-      const { data } = await axios.put(
-        `${origin}/api/users/password`,
-        {
-          password,
-        },
-        config
-      );
-      //dispatch
-      // dispatch(resetPasswordAction());
-      return data;
-    } catch (error) {
-      if (!error.response) {
-        throw error;
-      }
-      return rejectWithValue(error?.response?.data);
-    }
-  }
-);
 
 //fetch User details
 export const fetchUserDetailsAction = createAsyncThunk(
@@ -293,57 +253,6 @@ export const fetchUsersAction = createAsyncThunk(
   }
 );
 
-//Block User
-export const blockUserAction = createAsyncThunk(
-  "user/block",
-  async (id, { rejectWithValue, getState, dispatch }) => {
-    //get user token
-    const user = process.browser && getState()?.users;
-    const { userAuth } = user;
-    const config = {
-      headers: {
-        Authorization: `Bearer ${userAuth?.token}`,
-      },
-    };
-    try {
-      const { data } = await axios.put(
-        `${origin}/api/users/block-user/${id}`,
-        {},
-        config
-      );
-      return data;
-    } catch (error) {
-      if (!error?.response) throw error;
-      return rejectWithValue(error?.response?.data);
-    }
-  }
-);
-
-//unBlock User
-export const unBlockUserAction = createAsyncThunk(
-  "user/unblock",
-  async (id, { rejectWithValue, getState, dispatch }) => {
-    //get user token
-    const user = process.browser && getState()?.users;
-    const { userAuth } = user;
-    const config = {
-      headers: {
-        Authorization: `Bearer ${userAuth?.token}`,
-      },
-    };
-    try {
-      const { data } = await axios.put(
-        `${origin}/api/users/unblock-user/${id}`,
-        {},
-        config
-      );
-      return data;
-    } catch (error) {
-      if (!error?.response) throw error;
-      return rejectWithValue(error?.response?.data);
-    }
-  }
-);
 //Logout action
 export const logoutAction = createAsyncThunk(
   "/user/logout",
@@ -410,58 +319,6 @@ export const uploadProfilePhototAction = createAsyncThunk(
       return data;
     } catch (error) {
       if (!error?.response) throw error;
-      return rejectWithValue(error?.response?.data);
-    }
-  }
-);
-
-//Password reset token generator
-export const passwordResetTokenAction = createAsyncThunk(
-  "password/token",
-  async (email, { rejectWithValue, dispatch }) => {
-    const config = {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    };
-    //http call
-    try {
-      const { data } = await axios.post(
-        `${origin}/api/users/forget-password-token`,
-        { email },
-        config
-      );
-      return data;
-    } catch (error) {
-      if (!error.response) {
-        throw error;
-      }
-      return rejectWithValue(error?.response?.data);
-    }
-  }
-);
-
-//Password reset
-export const passwordResetAction = createAsyncThunk(
-  "password/reset",
-  async (user, { rejectWithValue, dispatch }) => {
-    const config = {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    };
-    //http call
-    try {
-      const { data } = await axios.put(
-        `${origin}/api/users/reset-password`,
-        { password: user?.password, token: user?.token },
-        config
-      );
-      return data;
-    } catch (error) {
-      if (!error.response) {
-        throw error;
-      }
       return rejectWithValue(error?.response?.data);
     }
   }
@@ -536,42 +393,7 @@ const usersSlices = createSlice({
       state.appErr = action?.payload;
       state.serverErr = action?.error?.message;
       state.registered = false;
-    });
-    //Password reset token generator
-    builder.addCase(passwordResetTokenAction.pending, (state, action) => {
-      state.loading = true;
-      state.appErr = null;
-      state.serverErr = null;
-    });
-    builder.addCase(passwordResetTokenAction.fulfilled, (state, action) => {
-      state.loading = false;
-      state.passwordToken = action?.payload;
-      state.appErr = null;
-      state.serverErr = null;
-    });
-    builder.addCase(passwordResetTokenAction.rejected, (state, action) => {
-      state.loading = false;
-      state.appErr = action?.payload;
-      state.serverErr = action?.error?.message;
-    });
-
-    //Password reset
-    builder.addCase(passwordResetAction.pending, (state, action) => {
-      state.loading = true;
-      state.appErr = null;
-      state.serverErr = null;
-    });
-    builder.addCase(passwordResetAction.fulfilled, (state, action) => {
-      state.loading = false;
-      state.passwordReset = action?.payload;
-      state.appErr = null;
-      state.serverErr = null;
-    });
-    builder.addCase(passwordResetAction.rejected, (state, action) => {
-      state.loading = false;
-      state.appErr = action?.payload;
-      state.serverErr = action?.error?.message;
-    });
+    })
 
     //user details
     builder.addCase(fetchUserDetailsAction.pending, (state, action) => {
@@ -591,40 +413,6 @@ const usersSlices = createSlice({
       state.serverErr = action?.error?.message;
     });
 
-    //Block user
-    builder.addCase(blockUserAction.pending, (state, action) => {
-      state.loading = true;
-      state.appErr = null;
-      state.serverErr = null;
-    });
-    builder.addCase(blockUserAction.fulfilled, (state, action) => {
-      state.loading = false;
-      state.block = action?.payload;
-      state.appErr = null;
-      state.serverErr = null;
-    });
-    builder.addCase(blockUserAction.rejected, (state, action) => {
-      state.loading = false;
-      state.appErr = action?.payload;
-      state.serverErr = action?.error?.message;
-    });
-    //unBlock user
-    builder.addCase(unBlockUserAction.pending, (state, action) => {
-      state.loading = true;
-      state.appErr = null;
-      state.serverErr = null;
-    });
-    builder.addCase(unBlockUserAction.fulfilled, (state, action) => {
-      state.loading = false;
-      state.unblock = action?.payload;
-      state.appErr = null;
-      state.serverErr = null;
-    });
-    builder.addCase(unBlockUserAction.rejected, (state, action) => {
-      state.loading = false;
-      state.appErr = action?.payload;
-      state.serverErr = action?.error?.message;
-    });
     //All Users
     builder.addCase(fetchUsersAction.pending, (state, action) => {
       state.loading = true;
@@ -741,25 +529,6 @@ const usersSlices = createSlice({
       state.appErr = action?.payload;
       state.serverErr = action?.error?.message;
     });
-    //update password
-    builder.addCase(updatePasswordAction.pending, (state, action) => {
-      state.loading = true;
-      state.appErr = null;
-      state.serverErr = null;
-    });
-    builder.addCase(updatePasswordAction.fulfilled, (state, action) => {
-      state.loading = false;
-      state.passwordUpdated = action?.payload;
-      state.isPasswordUpdated = false;
-      state.appErr = null;
-      state.serverErr = null;
-    });
-    builder.addCase(updatePasswordAction.rejected, (state, action) => {
-      state.loading = false;
-      state.appErr = action?.payload;
-      state.serverErr = action?.error?.message;
-    });
-
     //Upload Profile photo
     builder.addCase(uploadCoverPhototAction.pending, (state, action) => {
       state.loading = true;

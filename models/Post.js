@@ -1,4 +1,5 @@
-const mongoose = require("mongoose");
+// const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const postSchema = new mongoose.Schema(
   {
@@ -84,4 +85,5 @@ postSchema.virtual("comments", {
 // });
 
 const Post = mongoose.models.Post || mongoose.model("Post", postSchema);
+
 export default Post;

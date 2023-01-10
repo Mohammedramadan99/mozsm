@@ -1,12 +1,16 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import Intro from '../components/Auth/Intro'
+import dynamic from 'next/dynamic'
+const Intro = dynamic(() => import('../components/Auth/Intro'))
+
+// import Intro from '../components/Auth/Intro'
 import { loginUserAction, reset } from '../store/usersSlice'
-import Alert from '../components/Alert'
+// import Alert from '../components/Alert'
+const Alert = dynamic(() => import('../components/Alert'))
+
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import {useSession,signIn,signOut} from 'next-auth/react'
-import session from 'redux-persist/lib/storage/session'
 
 export default function login()
 {

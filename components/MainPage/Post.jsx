@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
 import FavoriteIcon from '@mui/icons-material/Favorite';
-import { toggleAddLikesToPost, toggleAddDisLikesToPost, fetchPostsAction,  createCommentAction, getCommentsAction } from "../../store/postsSlice"
+import { postAction,  createCommentAction } from "../../store/postsSlice"
 import { useDispatch, useSelector } from 'react-redux'
 import Image from 'next/image';
 import Link from 'next/link';
@@ -11,7 +11,6 @@ import Spinner from '../Spinner';
 import { fadeInUp } from '../../utils/animations';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/router';
-import Moment from 'moment'
 // import Button from '../SmallComponents/Button';
 const Button = dynamic(() => import('../SmallComponents/Button'))
 
@@ -37,20 +36,18 @@ function Post({ direction, post, profile })
     const addLikeHandler = () =>
     {
         if(direction === "user__bottom__postsGroup") {
-            dispatch(toggleAddLikesToPost({id:post?._id,user:post?.user,profile:true}))
+            dispatch(postAction({type:'like',id:post?._id,user:post?.user,profile:true}))
         } else {
-            dispatch(toggleAddLikesToPost({id:post?._id,user:post?.user,profile:false}))
+            dispatch(postAction({type:'like',id:post?._id,user:post?.user,profile:false}))
         }
-        // router.push('/?like=true',undefined, {shallow:false})
     }
     const addDislikeHandler = () =>
     {
         if(direction === "user__bottom__postsGroup") {
-            dispatch(toggleAddDisLikesToPost({id:post?._id,user:post?.user,profile:true}))
+            dispatch(postAction({type:'dislike',id:post?._id,user:post?.user,profile:true}))
         } else {
-            dispatch(toggleAddDisLikesToPost({id:post?._id,user:post?.user,profile:false}))
+            dispatch(postAction({type:'dislike',id:post?._id,user:post?.user,profile:false}))
         }
-        // router.push('?dislike=true',undefined, {shallow:false})
     }
     const addCommentHandler = (p, e) =>
     {

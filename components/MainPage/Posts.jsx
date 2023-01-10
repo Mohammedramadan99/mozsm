@@ -6,8 +6,10 @@ import { useSelector, useDispatch } from 'react-redux'
 import { useRouter } from 'next/router'
 
 import dynamic from 'next/dynamic'
-import { stagger } from '../../utils/animations'
+// import { stagger } from '../../utils/animations'
 import { motion } from 'framer-motion'
+const {stagger} = dynamic(() => import('../../utils/animations'))
+
 // import MyPost from './MyPost'
 const Post = dynamic(() => import('./Post'))
 // import Post from './Post'
@@ -17,18 +19,12 @@ function Posts({ direction, user })
 {
     const dispatch = useDispatch()
     const router = useRouter()
-    const { id } = router.query
-    const { userAuth } = useSelector(state => state.users)
-    const [postLiked, setPostLiked] = useState(false)
-    const [postDisLiked, setPostDisLiked] = useState(false)
+    
     const [commentContent, setCommentContent] = useState("")
-    const comment = useSelector(state => state?.comments);
-    const { postLists, isCreated, postCreated, loading:postloading } = useSelector(state => state.posts)
+    const { postLists, loading:postloading } = useSelector(state => state.posts)
     const { profile } = useSelector(state => state.users)
-    const { likes, dislikes } = useSelector(state => state.posts)
-    const { loading, appErr, serverErr, commentCreated } = comment;
+    
     const [showComments, setShowComments] = useState({ post: "", status: false })
-    const [currPost, setCurrPost] = useState({})
     // useEffect(() =>
     // {
     //     // id && dispatch(userProfileAction(id))
@@ -82,19 +78,5 @@ function Posts({ direction, user })
         </div>
     )
 }
-
-// export const getServerSideProps = wrapper.getServerSideProps(
-//     store => async () =>
-//     {
-
-//         // const user = store.dispatch(LoggedInUserAction());
-//         // const { userAuth } = useSelector(state => state.users)
-//         // console.log("userAuth", user);
-//         const data = await store.dispatch(fetchPostsAction());
-//         console.log("posts data", data)
-//         // await store.dispatch(userProfileAction(user?._id));
-//         // console.log("getServerSideProps returns ->", data.payload?.users)
-//     }
-// )
 
 export default Posts

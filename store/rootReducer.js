@@ -1,14 +1,10 @@
 import { combineReducers } from "redux";
 import usersReducer from "./usersSlice";
 import postsReducer from "./postsSlice";
-import commentsReducer from "./commentSlices";
-import notificationssReducer from "./notificationsSlice";
 import { HYDRATE } from "next-redux-wrapper";
 const combinedReducer = combineReducers({
   users: usersReducer,
   posts: postsReducer,
-  comments: commentsReducer,
-  notifications: notificationssReducer,
 });
 
 export const rootReducer = (state, action) =>

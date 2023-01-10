@@ -1,4 +1,3 @@
-import mongoose from 'mongoose';
 import nc from 'next-connect';
 import Post from '../../../models/Post';
 import User from '../../../models/User';
@@ -7,6 +6,16 @@ import db from '../../../utils/db/dbConnect';
 import { isAuth } from '../../../utils/auth';
 import photoUpload from '../../../utils/photoUpload';
 import cloudinary from "cloudinary";
+import axios from 'axios';
+
+// export async function getPosts () {
+//     await db.connect();
+//     const data = await fetch(`http://localhost:3000/api/posts`);
+//     console.log("#2 mohammedRamadan",data)
+//     await db.disconnect();
+//     return data
+
+// }
 
 cloudinary.config({
     cloud_name: "dtmjc8y9z",
@@ -88,10 +97,10 @@ handler.use(isAuth).post(async (req, res) =>
             user: req.user,
             image: imagesLinks[0]?.url
         });
-        const posts = await Post.find().populate('comments').populate('user')
+        // const posts = await Post.find().populate('comments').populate('user')
         res.status(200).json({
             success:true,
-            posts,
+            // posts,
             post
         });
     } catch (error)

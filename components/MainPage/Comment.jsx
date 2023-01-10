@@ -6,8 +6,6 @@ import moment from 'moment/moment'
 export default function Comment({ comment })
 {
     
-    const { loading } = useSelector(state => state.comments)
-    
     return (
         <div className="mainPage__middle__posts__container__commentsGroupe__comments__comment">
             <div className="mainPage__middle__posts__container__commentsGroupe__comments__comment__img img__rounded">

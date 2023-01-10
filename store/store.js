@@ -1,5 +1,5 @@
-import { createStore, applyMiddleware, combineReducers } from "redux";
-import { createWrapper, HYDRATE } from "next-redux-wrapper";
+import { createStore, applyMiddleware } from "redux";
+import { createWrapper } from "next-redux-wrapper";
 import thunkMiddleware from "redux-thunk";
 import {rootReducer} from "./rootReducer";
 import logger from "redux-logger";

@@ -13,9 +13,8 @@ import Link from 'next/link'
 import { useSelector, useDispatch } from 'react-redux'
 import { useRef } from 'react'
 import { useRouter } from 'next/router'
-import { LoggedInUserAction, logoutAction } from '../../store/usersSlice'
+import { logoutAction } from '../../store/usersSlice'
 import Image from 'next/image'
-import { fetchNotificationsAction } from '../../store/notificationsSlice'
 import { useSession } from 'next-auth/react'
 function Navbar()
 {
@@ -27,7 +26,6 @@ function Navbar()
     const { userAuth,loggedOut, usersList } = store
     const currUser = session?.user
     
-    const { allNotifications } = useSelector(state => state?.notifications)
     const [icons, setIcons] = useState([
         {
             icon: <HomeIcon />,
@@ -141,11 +139,11 @@ function Navbar()
                     </ul>
                     <ul className={notificationOpened ? `mainNav__right__dropDown notifications active` : "mainNav__right__dropDown inactive"} >
                         <h6 style={{padding:"20px 20px 10px"}}> last 4 notifications </h6>
-                        {userAuth && allNotifications?.length > 1 ? allNotifications?.map(item => <NotificationsItem text={item.title} userImg={item?.reactedUser?.profilePhoto} />) : (
+                        {/* {userAuth && allNotifications?.length > 1 ? allNotifications?.map(item => <NotificationsItem text={item.title} userImg={item?.reactedUser?.profilePhoto} />) : (
                             <div style={{padding:"20px"}}>
                                 there is no notifications now
                             </div>
-                        )}
+                        )} */}
                     </ul>
                 </div>
             </div >
