@@ -53,11 +53,11 @@ export const getServerSideProps = wrapper.getServerSideProps(
     // const data = await response.json();
 
       // console.log("#1 mohammedRamadan",data)
-      await store.dispatch(fetchPostsAction({url:baseUrl}));
+      await store.dispatch(fetchPostsAction());
     // store.dispatch(getAllPosts(data));
     // await store.dispatch(fetchUsersAction({url:baseUrl,props:4}));
     // await store.dispatch(getCommentsAction({url:baseUrl}));
-    await store.dispatch(LoggedInUserAction({url:baseUrl,email:session.user.email}));
+    await store.dispatch(LoggedInUserAction({email:session.user.email}));
     
     // await db.disconnect();
 

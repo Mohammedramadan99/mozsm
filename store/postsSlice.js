@@ -37,7 +37,7 @@ export const createpostAction = createAsyncThunk(
 //fetch all posts
 export const fetchPostsAction = createAsyncThunk(
   "post/list",
-  async ({url}, { rejectWithValue, getState, dispatch }) => {
+  async (_, { rejectWithValue, getState, dispatch }) => {
     try
     {
       // const dev = process.env.NODE_ENV !== "production";
@@ -45,8 +45,9 @@ export const fetchPostsAction = createAsyncThunk(
       // const server = dev
       //   ? "http://localhost:3000"
       //   : productionLink;
+      
       const { data } = await axios.get(
-        `${url}/api/posts`
+        `${URL}/api/posts`
       );
       return data;
     } catch (error) {

@@ -1,11 +1,11 @@
 
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import URL from "../utils/URL";
 const origin =
   typeof window !== "undefined" && window.location.origin
     ? window.location.origin
     : "";
-    const productionLink = "https://mozsm.vercel.com"
 // const { origin } = absoluteUrl(req, req.headers.host);
 export const registerUserAction = createAsyncThunk(
   "users/register",
@@ -67,11 +67,7 @@ export const userProfileAction = createAsyncThunk(
     //http call
     try
     {
-      const dev = process.env.NODE_ENV !== "production";
-
-      const server = dev
-        ? "http://localhost:3000"
-        : productionLink;
+      
       let link = `${url}/api/users/profile/${id}`;
       const { data } = await axios.get(
         link, // `http://localhost:3000/api/users/profile/${id}`
@@ -90,7 +86,7 @@ export const userProfileAction = createAsyncThunk(
 
 export const LoggedInUserAction = createAsyncThunk(
   "user/loggedIn",
-  async ({url,email}, { rejectWithValue, getState, dispatch }) => {
+  async ({email}, { rejectWithValue, getState, dispatch }) => {
     //get user token
     const user = getState().users;
     const { userAuth } = user;
@@ -102,7 +98,7 @@ export const LoggedInUserAction = createAsyncThunk(
     //http call
     try {
       
-      let link = `${url}/api/users/profile`;
+      let link = `${URL}/api/users/profile`;
       const {data} = await axios.post(link,{email},config)
 
       return data;
