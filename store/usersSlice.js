@@ -90,24 +90,22 @@ export const userProfileAction = createAsyncThunk(
 
 export const LoggedInUserAction = createAsyncThunk(
   "user/loggedIn",
-  async (email, { rejectWithValue, getState, dispatch }) => {
+  async ({url,email}, { rejectWithValue, getState, dispatch }) => {
     //get user token
-    // const user = getState().users;
-    // const { userAuth } = user;
-    // const config = {
-    //   headers: {
-    //     Authorization: `Bearer ${userAuth?.token}`,
-    //   },
-    // };
+    const user = getState().users;
+    const { userAuth } = user;
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userAuth?.token}`,
+      },
+    };
     //http call
     try {
-      // const dev = process.env.NODE_ENV !== "production";
-      // const server = dev
-      //   ? "http://localhost:3000"
-      //   : productionLink;
       
+      let link = `${url}/api/users/profile`;
+      const {data} = await axios.post(link,{email},config)
 
-      return email;
+      return data;
     } catch (error) {
       if (!error?.response) {
         throw error;

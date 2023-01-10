@@ -31,16 +31,16 @@ export const getServerSideProps = wrapper.getServerSideProps(
   {
     
     const {req} = context
-    // const session = await getSession({ req });
+    const session = await getSession({ req });
     const protocol = req.headers['x-forwarded-proto'] || 'http'
     const baseUrl = req ? `${protocol}://${req.headers.host}` : ''
     // const posts = await getPosts()
-    await db.connect();
+    // await db.connect();
     // const res = await fetch(`http://localhost:3000/api/posts`);
-    const res = await fetch(`${baseUrl}/api/posts`);
-    const data = await res.json();
+    // const res = await fetch(`${baseUrl}/api/posts`);
+    // const data = await res.json();
 
-    console.log({data})
+    // console.log({data})
     // const { data } = await axios.post(
       //   `${link}`,
       //   {email:"ramadanmohammed502@gmail.com"}
@@ -52,12 +52,12 @@ export const getServerSideProps = wrapper.getServerSideProps(
     // });
     // const data = await response.json();
 
-      console.log("#1 mohammedRamadan",data)
-    store.dispatch(getAllPosts(data));
-    // store.dispatch(testo(data));
+      // console.log("#1 mohammedRamadan",data)
+      await store.dispatch(fetchPostsAction({url:baseUrl}));
+    // store.dispatch(getAllPosts(data));
     // await store.dispatch(fetchUsersAction({url:baseUrl,props:4}));
     // await store.dispatch(getCommentsAction({url:baseUrl}));
-    // await store.dispatch(LoggedInUserAction(data));
+    await store.dispatch(LoggedInUserAction({url:baseUrl,email:session.user.email}));
     
     // await db.disconnect();
 
