@@ -40,11 +40,6 @@ export const fetchPostsAction = createAsyncThunk(
   async (_, { rejectWithValue, getState, dispatch }) => {
     try
     {
-      // const dev = process.env.NODE_ENV !== "production";
-      // console.log("originUrl", window.location.origin)
-      // const server = dev
-      //   ? "http://localhost:3000"
-      //   : productionLink;
       let link = `${URL}/api/posts`;
       const { data } = await axios.get(link,{ 
         headers: { "Accept-Encoding": "gzip,deflate,compress" } 
@@ -71,7 +66,7 @@ export const postAction = createAsyncThunk(
       },
     };
     try {
-      let link = `${URL}/api/posts/${type === 'like' ? "like" : "dislike" }`
+      let link = `/api/posts/${type === 'like' ? "like" : "dislike" }`
       const { data } = await axios.put(
         link,
         { id },
@@ -178,16 +173,13 @@ const postSlice = createSlice({
     
   },
   extraReducers: (builder) => {
-    //create post
+    
     builder.addCase(createpostAction.pending, (state, action) => {
       state.createPostLoading = true;
     });
     builder.addCase(createpostAction.fulfilled, (state, action) => {
-      // const data = state.comments.push(action.payload.comment);
-      
       state.postLists = [...state.postLists, action.payload.post].sort((a, b) => b.createdAt > a.createdAt ? 1 : -1)
       state.createPostLoading = false;
-      // state.postLists = action.payload.posts;
       state.isCreated = true;
       state.appErr = null;
       state.serverErr = null;
