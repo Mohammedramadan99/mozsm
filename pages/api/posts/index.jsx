@@ -50,8 +50,11 @@ handler.get(async (req, res) =>
             options: {sort: {'createdAt' : -1} }
         }).sort('-createdAt')
         // const posts = await Post.find({}).populate('comments').populate('user')
-        console.log("postsHere",posts)
-        res.status(200).json(posts)
+        console.log("#2 got the data",posts)
+        res.status(200).json({
+            success:true,
+            posts
+        });
     } catch (err) {
         res.status(500).json(err.message)
     }

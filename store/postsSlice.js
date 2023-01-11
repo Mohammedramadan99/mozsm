@@ -46,8 +46,8 @@ export const fetchPostsAction = createAsyncThunk(
       //   ? "http://localhost:3000"
       //   : productionLink;
       let link = `${URL}/api/posts`;
-      
       const { data } = await axios.get(link);
+      console.log("#2 got the data",data)
       return data;
     } catch (error) {
       if (!error?.response) throw error;
@@ -206,7 +206,7 @@ const postSlice = createSlice({
     builder.addCase(fetchPostsAction.fulfilled, (state, action) =>
     {
       console.log("fetchFul",action.payload)
-      state.postLists = action?.payload;
+      state.postLists = action?.payload.posts;
       state.loading = false;
       state.appErr = null;
       state.serverErr = null;

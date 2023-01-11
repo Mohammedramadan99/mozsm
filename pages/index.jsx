@@ -25,44 +25,56 @@ export default function Home() {
   );
 }
 
+
 export const getServerSideProps = wrapper.getServerSideProps(
-    store => async (context) =>
-    // store => async ({req,res,...rest}) =>
-  {
-    
+  store => async (context) =>
+{
     const {req} = context
     const session = await getSession({ req });
-    const protocol = req.headers['x-forwarded-proto'] || 'http'
-    const baseUrl = req ? `${protocol}://${req.headers.host}` : ''
-    // const posts = await getPosts()
-    // await db.connect();
-    // const res = await fetch(`http://localhost:3000/api/posts`);
-    // const res = await fetch(`${baseUrl}/api/posts`);
-    // const data = await res.json();
 
-    // console.log({data})
-    // const { data } = await axios.post(
-      //   `${link}`,
-      //   {email:"ramadanmohammed502@gmail.com"}
-      // );
-    //   let link = `${baseUrl}/api/users/profile`;
-    //   const response = await fetch(link, {
-    //   method: "POST",
-    //   body: {email:"ramadanmohammed502@gmail.com"},
-    // });
-    // const data = await response.json();
-
-      // console.log("#1 mohammedRamadan",data)
-      await store.dispatch(fetchPostsAction());
-    // store.dispatch(getAllPosts(data));
+    await store.dispatch(fetchPostsAction());
     await store.dispatch(fetchUsersAction(4));
-    // await store.dispatch(getCommentsAction({url:baseUrl}));
     await store.dispatch(LoggedInUserAction({email:session.user.email}));
-    
-    // await db.disconnect();
+})
 
-  }
-)
+// export const getServerSideProps = wrapper.getServerSideProps(
+//     store => async (context) =>
+    
+//   {
+    
+//     const {req} = context
+//     const session = await getSession({ req });
+//     const protocol = req.headers['x-forwarded-proto'] || 'http'
+//     const baseUrl = req ? `${protocol}://${req.headers.host}` : ''
+//     // const posts = await getPosts()
+//     // await db.connect();
+//     // const res = await fetch(`http://localhost:3000/api/posts`);
+//     // const res = await fetch(`${baseUrl}/api/posts`);
+//     // const data = await res.json();
+
+//     // console.log({data})
+//     // const { data } = await axios.post(
+//       //   `${link}`,
+//       //   {email:"ramadanmohammed502@gmail.com"}
+//       // );
+//     //   let link = `${baseUrl}/api/users/profile`;
+//     //   const response = await fetch(link, {
+//     //   method: "POST",
+//     //   body: {email:"ramadanmohammed502@gmail.com"},
+//     // });
+//     // const data = await response.json();
+
+//       // console.log("#1 mohammedRamadan",data)
+//       await store.dispatch(fetchPostsAction());
+//     // store.dispatch(getAllPosts(data));
+//     await store.dispatch(fetchUsersAction(4));
+//     // await store.dispatch(getCommentsAction({url:baseUrl}));
+//     await store.dispatch(LoggedInUserAction({email:session.user.email}));
+    
+//     // await db.disconnect();
+
+//   }
+// )
 // Home.getInitialProps = wrapper.getInitialPageProps(
 //   (store) =>
 //     async ({ pathname, req, res }) =>
