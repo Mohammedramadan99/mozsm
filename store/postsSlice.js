@@ -140,9 +140,7 @@ export const getCommentsAction = createAsyncThunk(
       //   ? `${origin}/api/comments?post=${postId}`
       //   : `${origin}/api/comments`
 
-      const dev = process.env.NODE_ENV !== "production";
-
-      let link = `${url}/api/comments`;
+      let link = `${URL}/api/comments`;
       const { data } = await axios.get(link, config);
       return data;
     } catch (error) {

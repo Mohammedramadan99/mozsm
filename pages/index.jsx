@@ -31,10 +31,12 @@ export const getServerSideProps = wrapper.getServerSideProps(
 {
     const {req} = context
     const session = await getSession({ req });
-
-    await store.dispatch(fetchPostsAction());
-    await store.dispatch(fetchUsersAction(4));
-    await store.dispatch(LoggedInUserAction({email:session.user.email}));
+    const data = Promise.all([
+    await store.dispatch(fetchPostsAction()),
+    await store.dispatch(fetchUsersAction(4)),
+    await store.dispatch(LoggedInUserAction({email:session.user.email})),
+  ])
+  console.log("serversidedata", data)
 })
 
 // export const getServerSideProps = wrapper.getServerSideProps(
