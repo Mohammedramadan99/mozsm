@@ -46,7 +46,9 @@ export const fetchPostsAction = createAsyncThunk(
       //   ? "http://localhost:3000"
       //   : productionLink;
       let link = `${URL}/api/posts`;
-      const { data } = await axios.get(link);
+      const { data } = await axios.get(link,{ 
+        headers: { "Accept-Encoding": "gzip,deflate,compress" } 
+    });
       console.log("#2 got the data",data)
       return data;
     } catch (error) {
